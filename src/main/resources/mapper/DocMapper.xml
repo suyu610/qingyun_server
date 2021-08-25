@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.DocMapper">
+
+    <update id="togglePublished">
+        update doc
+        SET is_published = ABS(is_published - 1)
+        where id = #{docId}
+          and ss_number = #{ssNumber}
+    </update>
+
+    <select id="getHotDoc" resultType="com.qdu.qingyun.entity.VO.DocItemVO">
+        select doc.id,
+               title,
+               doc.introduce,
+               is_hot,
+               price,
+               doc.star_count,
+               doc.category_id,
+               user.name                                                                   as authorName,
+               (select COUNT(id) from user_doc_star where doc_id = doc.id and DELETED = 0) as starCount,
+               doc_type.type_key                                                           as docuType
+        from doc
+                 inner join user on doc.ss_number = user.ss_number
+                 inner join doc_type on doc.type_id = doc_type.id
+        where doc.has_verify = 1
+          and is_published = 1
+        order by star_count
+    </select>
+
+    <select id="getDocListByCourseName" resultType="com.qdu.qingyun.entity.VO.DocItemVO">
+        select doc.id,
+               title,
+               doc.introduce,
+               is_hot,
+               price,
+               doc.star_count,
+               doc.category_id,
+               user.name                                                                   as authorName,
+               (select COUNT(id) from user_doc_star where doc_id = doc.id and DELETED = 0) as starCount,
+               doc_type.type_key                                                           as docuType
+        from doc
+                 inner join user on doc.ss_number = user.ss_number
+                 inner join doc_type on doc.type_id = doc_type.id
+        where doc.has_verify = 1
+          and is_published = 1
+          and course_name = #{courseName}
+        order by star_count
+    </select>
+
+
+    <select id="getDocDetailById" resultType="com.qdu.qingyun.entity.VO.DocDetailItemVO">
+        select doc.id,
+               doc.bought_count,
+               doc.ss_number,
+               title,
+               doc.course_name,
+               doc.introduce,
+               doc.preview_page_count,
+               is_hot,
+               price,
+               doc.star_count,
+               doc.category_id,
+               user.name                                                                  as authorName,
+               user.introduce                                                             as uploaderIntroduce,
+               user.scholar_introduce                                                     as uploaderScholarIntroduce,
+               doc_type.type_key                                                          as docuType,
+               (select COUNT(id) from user_doc_star where doc_id = #{id} and DELETED = 0) as starCount,
+               (select COUNT(id) from `order` where doc_id = #{id})                       as boughtCount
+
+        from doc
+                 inner join user
+                            on doc.ss_number = user.ss_number
+                 inner join doc_type on doc.type_id = doc_type.id
+        where doc.id = #{id}
+    </select>
+
+    <select id="getDocGeneratePreviewImageItemById"
+            resultType="com.qdu.qingyun.entity.VO.DocGeneratePreviewImageItemVO">
+        select id, ss_number, preview_page_count as previewImageCount, doc_file_dir
+        from doc
+        where id = #{docId}
+    </select>
+
+    <select id="getRelatedDocByCategoryId" resultType="com.qdu.qingyun.entity.VO.DocRelatedItemVO">
+        select doc.id, title, doc_preview_img.url as previewImageUrl, type_id, doc_type.type_key as docuType
+        from doc
+                 inner join doc_type on doc.type_id = doc_type.id
+                 left join doc_preview_img on doc_preview_img.doc_id = doc.id
+        where category_id = #{categoryId}
+          and doc.id != #{docId}
+          and has_verify = 1
+          and is_published = 1
+            limit 5
+    </select>
+
+    <select id="getDocBySsNumber" resultType="com.qdu.qingyun.entity.VO.DocRelatedItemVO">
+        select doc.id, title, type_id, doc_type.type_key as docuType
+        from doc
+                 inner join doc_type on doc.type_id = doc_type.id
+        where ss_number = #{ssNumber}
+          and has_verify = 1
+          and is_published = 1
+            limit #{limit}
+    </select>
+
+    <select id="getSingleImgByDocId" resultType="String">
+        select url
+        from doc_preview_img
+        where doc_id = #{docId} limit 1;
+    </select>
+
+
+    <select id="getDocFiles" resultType="String">
+        select url
+        from doc_files
+        where doc_id = #{id}
+        order by id
+    </select>
+
+    <select id="getTitle" resultType="String">
+        select title
+        from doc
+        where id = #{docId}
+    </select>
+
+    <select id="getDocPreviewImage" resultType="String">
+        select url
+        from doc_preview_img
+        where doc_id = #{id}
+    </select>
+
+    <insert id="insertDoc" parameterType="com.qdu.qingyun.entity.VO.DocUploadVO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into doc(title, introduce, category_id, type_id, price, course_name, user_openid, upload_time,
+                        preview_page_count, ss_number, doc_file_dir)
+        values (#{upload_doc_title}, #{upload_doc_introduce}, #{upload_categoryId}, #{upload_doc_type},
+                #{upload_doc_price}, #{upload_course_title}, #{openid}, NOW(), #{upload_doc_previewCount},
+                #{ssNumber}, #{upload_doc_file_dir});
+    </insert>
+
+    <insert id="insertDocFileUrl" parameterType="String">
+        insert into doc_files(url,doc_id) values
+        <foreach collection="urls" item="url" separator=",">
+            (#{url},#{doc_id})
+        </foreach>
+    </insert>
+
+    <insert id="insertDocPreviewImgUrl" parameterType="String">
+        insert into doc_preview_img(url,doc_id) values
+        <foreach collection="urls" item="url" separator=",">
+            (#{url},#{doc_id})
+        </foreach>
+
+    </insert>
+
+    <insert id="insertSingleDocPreviewImgUrl">
+        insert into doc_preview_img(url, doc_id)
+        values (#{url}, #{doc_id})
+    </insert>
+
+    <select id="getAllCourse" resultType="String">
+        select course_name
+        from doc
+        where has_verify = 1
+          and is_published = 1
+    </select>
+
+    <select id="getStarDoc" resultType="com.qdu.qingyun.entity.VO.DocStarItemVO">
+        SELECT uds.doc_id    as id,
+               doc.title,
+               doc.price,
+               user.name     as authorName,
+               dt.type_value as typeName
+        FROM user_doc_star uds
+                 INNER JOIN doc on doc.id = uds.doc_id
+                 INNER JOIN doc_type dt on dt.id = doc.type_id
+                 INNER JOIN user on doc.ss_number = user.ss_number
+        where uds.ss_number = #{ssNumber}
+          and uds.DELETED = 0
+    </select>
+
+
+    <update id="unStar">
+        update user_doc_star uds
+        set DELETED = 1
+        where uds.ss_number = #{ssNumber}
+          and uds.doc_id = #{docId}
+    </update>
+
+    <update id="updateStarBySsNumberAndDocId">
+        update user_doc_star uds
+        set DELETED = 0
+        where uds.ss_number = #{ssNumber}
+          and uds.doc_id = #{docId}
+    </update>
+
+    <select id="insertStarBySsNumberAndDocId">
+        insert
+        user_doc_star(ss_number,doc_id) values(
+        #{ssNumber},
+        #{docId}
+        )
+    </select>
+
+    <select id="isStar" resultType="Boolean">
+
+        select COUNT(id)
+        from user_doc_star
+        where ss_number = #{ssNumber}
+          and doc_id = #{docId}
+          and DELETED = 0
+    </select>
+
+    <select id="getMyDoc" resultType="com.qdu.qingyun.entity.VO.MyUploadDocVO">
+        select title,
+               doc.id,
+               introduce,
+               dt.type_value                                               as typeName,
+               is_hot,
+               price,
+               category_id,
+               has_verify,
+               is_published                                                as isPublished,
+               (select COUNT(id) from `order` where order.doc_id = doc.id) as downCount
+        from doc
+                 INNER JOIN doc_type dt on dt.id = doc.type_id
+        where ss_number = #{ssNumber};
+    </select>
+
+    <select id="getDocIdBySsNumber" resultType="Integer">
+        select id
+        from doc
+        where ss_number = #{ssNumber}
+    </select>
+
+    <select id="searchByKeyword" resultType="com.qdu.qingyun.entity.VO.DocSearchResVO">
+        select title, id as docId, user.name as authorName,course_name
+        from doc
+                 inner join user on doc.ss_number = user.ss_number
+        where (doc.course_name like concat('%', #{keyword,jdbcType=VARCHAR}, '%')
+            or doc.title like concat('%', #{keyword,jdbcType=VARCHAR}, '%'))
+          and doc.has_verify = 1
+          and doc.is_published = 1
+
+    </select>
+</mapper>

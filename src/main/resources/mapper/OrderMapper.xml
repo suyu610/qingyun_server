@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.OrderMapper">
+
+    <select id="hasBought" resultType="Boolean">
+        select COUNT(id)
+        from `order`
+        where buyer_ss_number = #{ssNumber}
+          and doc_id = #{docId}
+    </select>
+
+    <insert id="addOrder" parameterType="com.qdu.qingyun.entity.VO.OrderAddReqVO">
+        insert into `order`(out_trade_no, create_time, buyer_ss_number, price, doc_id, address, comment)
+        values (#{outTradeNo}, #{createTimeDateFormat}, #{buyerSsNumber}, #{price}, #{docId}, #{address}, #{comment})
+    </insert>
+
+    <select id="getAllOrders" resultType="com.qdu.qingyun.entity.VO.OrderReqVO">
+        select doc_id,
+               order.create_time  as boughtDate,
+               user.name          as authorName,
+               order.out_trade_no as orderId,
+               order.price,
+               status,
+               doc.title
+        from `order`
+                 inner join doc on doc.id = order.doc_id
+                 inner join user on user.ss_number = doc.ss_number
+        where order.buyer_ss_number = #{ssNumber}
+
+    </select>
+
+    <select id="getAllSoldOrders" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.OrderSoldResVO">
+        select
+               doc.title,
+               order.doc_id,
+               order.create_time,
+               order.price,
+               user.name as buyerName
+        from `order`
+        inner join doc on doc.id = order.doc_id
+        inner join user on user.ss_number = order.buyer_ss_number
+        where order.doc_id =
+        <foreach collection="docIdList" item="docId" separator="or">
+            (#{docId})
+        </foreach>
+    </select>
+
+</mapper>

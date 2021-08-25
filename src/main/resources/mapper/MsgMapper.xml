@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.MsgMapper">
+    <!--    List<MsgPO> getMsg(String ssNumber);-->
+    <!--    int getUnReadMsgCount(String ssNumber);-->
+
+    <select id="getMsg" resultType="com.qdu.qingyun.entity.PO.MsgPO">
+        select *
+        from user_msg
+        where user_number = #{ssNumber}
+          and is_read &lt;= #{flag}
+          and DELETED = 0
+    </select>
+
+    <select id="getUnReadMsgCount" resultType="Integer">
+        select COUNT(id)
+        from user_msg
+        where user_number = #{ssNumber}
+          and is_read = 0
+          and DELETED = 0
+    </select>
+
+    <insert id="insertMsg" parameterType="com.qdu.qingyun.entity.PO.MsgPO">
+        insert into user_msg(create_time, user_number, title, content, author_ss_number, msg_type)
+        values (NOW(), #{userNumber}, #{title}, #{content}, #{authorSsNumber}, #{msgType})
+    </insert>
+
+    <update id="setMsgRead" parameterType="Integer">
+        update user_msg
+        set is_read = 1
+    </update>
+
+    <update id="setMsgDel" parameterType="Integer">
+        update user_msg
+        set DELETED = 1
+    </update>
+
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.TagMapper">
+
+    <select id="getTagsBySsNumber" resultType="com.qdu.qingyun.entity.VO.UserTagVO">
+        select id, content, create_user_id, create_time
+        from user_tag
+        where owner_user_id = #{ssNumber}
+          and has_verify = 1
+    </select>
+
+    <select id="insertTag" parameterType="com.qdu.qingyun.entity.VO.UserTagVO">
+        insert into user_tag(content, create_user_id, owner_user_id, create_time)
+        values (#{content}, #{createUserId}, #{ownerUserId}, NOW())
+    </select>
+
+</mapper>

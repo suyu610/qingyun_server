@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.QuizMapper">
+
+    <select id="getAllQuizCate" resultType="com.qdu.qingyun.entity.VO.QuizCateVO">
+        select *
+        from quiz_cate
+    </select>
+
+    <select id="getQuizPObyCateID" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
+        select quiz_quiz.id,
+               quiz_quiz.title,
+               quiz_quiz.desc,
+               quiz_quiz.is_hot,
+               school_stu.name as 'author',
+               quiz_quiz.tag as 'tags',
+               quiz_quiz.score
+        from quiz_quiz
+                 inner join school_stu on ss_number = quiz_quiz.user_id
+        where cate_id = #{cateId}
+    </select>
+
+    <select id="getUserQuiz" parameterType="String" resultType="com.qdu.qingyun.entity.VO.UserQuizPO">
+        select quiz_quiz.title,
+               (select count(*)
+                from quiz_ques
+                where quiz_id = quiz_quiz.id) as totalNum,
+
+               (select count(*)
+                from quiz_record_ques
+                where quiz_id = quiz_quiz.id
+                  and is_correct = 1)         as doneNum,
+
+               (select count(*)
+                from quiz_record_ques
+                where quiz_id = quiz_quiz.id
+                  and is_correct = 0)         as errNum,
+
+               (select count(*)
+                from quiz_ques_star
+                where quiz_id = quiz_quiz.id
+                  and DELETED = 0)            as starNum
+
+        from quiz_quiz_star
+                 inner join quiz_quiz
+                            on quiz_quiz_star.quiz_id = quiz_quiz.id
+        where quiz_quiz_star.user_id = #{ssNumber}
+    </select>
+
+    <select id="getAddNumber" parameterType="Integer" resultType="Integer">
+        select COUNT(*)
+        from quiz_quiz_star
+        where quiz_id = #{quizId}
+    </select>
+
+    <select id="getNoteNumber" parameterType="Integer" resultType="Integer">
+        select COUNT(*)
+        from quiz_note
+        where quiz_id = #{quizId}
+          and is_public = 1
+
+    </select>
+    <select id="getQuizNumber" parameterType="Integer" resultType="Integer">
+        select COUNT(*)
+        from quiz_quiz
+        where id = #{quizId}
+
+    </select>
+    <select id="getCommentNumber" parameterType="Integer" resultType="Integer">
+        select COUNT(*)
+        from quiz_comment
+        where quiz_id = #{quizId}
+    </select>
+    <select id="hasStar" resultType="Integer">
+        select COUNT(*)
+        from quiz_quiz_star
+        where quiz_id = #{quizId}
+          and user_id = #{ssNumber}
+    </select>
+
+    <select id="getQuizById" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
+        select quiz_quiz.id,
+               quiz_quiz.title,
+               quiz_quiz.desc,
+               quiz_quiz.version,
+               quiz_quiz.update_time as createTime,
+               school_stu.name as 'author',
+               quiz_quiz.tag as 'tags',
+               quiz_quiz.score
+        from quiz_quiz
+                 inner join school_stu on ss_number = quiz_quiz.user_id
+        where quiz_quiz.id = #{quizId}
+    </select>
+
+    <insert id="addQuiz">
+        insert into quiz_quiz_star (user_id, quiz_id, create_time)
+        values (#{ssNumber}, #{quizId}, NOW());
+    </insert>
+
+    <delete id="removeQuiz">
+        delete
+        from quiz_quiz_star
+        where user_id = #{ssNumber}
+          and quiz_id = #{quizId}
+    </delete>
+
+</mapper>

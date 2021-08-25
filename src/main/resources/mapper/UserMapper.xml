@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qdu.qingyun.mapper.UserMapper">
+
+    <update id="uploadLastLoginTime" parameterType="String">
+        update user
+        set last_login_time=NOW()
+        where ss_number = #{ssNumber};
+    </update>
+
+    <select id="nameAndNumberMatched" resultType="Integer">
+        select count(id)
+        from school_stu
+        where name = #{name}
+          and ss_number = #{ssNumber}
+    </select>
+
+    <select id="hasRegister" resultType="Integer">
+        select count(ss_number)
+        from user
+        where ss_number = #{ssNumber}
+    </select>
+
+    <select id="findNameBySsNumber" resultType="String" parameterType="String">
+        select name
+        from school_stu
+        where ss_number = #{ssNumber}
+    </select>
+
+    <insert id="initUser" parameterType="com.qdu.qingyun.entity.VO.LoginUserReqVO">
+        insert into user(name, ss_number, openid, password, create_time, last_login_time)
+        values (#{name}, #{ssNumber}, #{openid}, #{password}, NOW(), NOW());
+    </insert>
+
+    <select id="getPassword" resultType="String">
+        select password
+        from user
+        where ss_number = #{ssNumber}
+    </select>
+
+    <select id="getInitUserData" parameterType="String" resultType="com.qdu.qingyun.entity.BO.UserInitDataBO">
+        select remain_money,
+               avatar_url,
+               college_name,
+               address,
+               (select COUNT(id) from `order` where buyer_ss_number = #{ssNumber})                 as boughtCount,
+               (select COUNT(id) from user_doc_star where ss_number = #{ssNumber} and DELETED = 0) as starCount,
+               (select COUNT(id) from doc where ss_number = #{ssNumber} ) as uploadCount,
+               contact,
+               introduce,
+               scholar_introduce,
+               user.name,
+               user.ss_number,
+               user.college_name,
+               user.major_name
+        from user
+                 inner join school_stu on school_stu.ss_number = user.ss_number
+        where user.ss_number = #{ssNumber}
+    </select>
+
+    <select id="getProfileByNumber" resultType="com.qdu.qingyun.entity.VO.UserProfileResVO">
+        SELECT name,
+               like_count,
+               be_star_count as starCount,
+               ss_number,
+               introduce,
+               scholar_introduce,
+               major_name    as major,
+               college_name  as college
+
+        from user
+        where user.ss_number = #{ssNumber}    </select>
+
+    <update id="modifyProfile" parameterType="com.qdu.qingyun.entity.VO.UserProfileReqVO">
+
+        update user
+        <set>
+            <if test="upload_major_name != null">major_name=#{upload_major_name},</if>
+            <if test="upload_college_name != null">college_name=#{upload_college_name},</if>
+            <if test="upload_tel != null">contact=#{upload_tel},</if>
+            <if test="upload_address != null">address=#{upload_address},</if>
+            <if test="upload_introduce != null">introduce=#{upload_introduce},</if>
+            <if test="upload_scholar_introduce != null">scholar_introduce=#{upload_scholar_introduce},</if>
+        </set>
+
+        where ss_number = #{ssNumber}
+    </update>
+
+
+</mapper>
