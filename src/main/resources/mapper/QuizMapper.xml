@@ -7,7 +7,7 @@
         from quiz_cate
     </select>
 
-    <select id="getQuizPObyCateID" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
+    <select id="getQuizPObyCateId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
         select quiz_quiz.id,
                quiz_quiz.title,
                quiz_quiz.desc,
@@ -20,8 +20,28 @@
         where cate_id = #{cateId}
     </select>
 
+    <select id="getChapterByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizChapterPO">
+        select *, (select count(*) from quiz_ques where quiz_ques.quiz_id = quiz_chapter.id) as totalNum
+        from quiz_chapter
+        where quiz_id = #{quizId}
+    </select>
+
+    <select id="getSectionByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizSectionPO">
+        select *, (select count(*) from quiz_ques where quiz_ques.section_id = quiz_section.id) as totalNum
+        from quiz_section
+        where quiz_id = #{quizId}
+    </select>
+
+    <select id="getQuesByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizQuesPO">
+        select *
+        from quiz_ques
+        where quiz_id = #{quizId} limit 50
+    </select>
+
+
     <select id="getUserQuiz" parameterType="String" resultType="com.qdu.qingyun.entity.VO.UserQuizPO">
         select quiz_quiz.title,
+               quiz_quiz.id,
                (select count(*)
                 from quiz_ques
                 where quiz_id = quiz_quiz.id) as totalNum,
@@ -103,5 +123,75 @@
         where user_id = #{ssNumber}
           and quiz_id = #{quizId}
     </delete>
+
+    <select id="getQuesAnswerBasicInfo" parameterType="Integer"
+            resultType="com.qdu.qingyun.entity.VO.QuizQuesForAnswerVO">
+        select id,
+               title,
+               score,
+               answer                                                          as answerStr,
+               section_id,
+               chapter_id,
+               quiz_id,
+               explain_id as 'defaultNoteId',
+               (select value from quiz_ques_type where id = quiz_ques.type_id) as type
+        from quiz_ques
+        where id = #{quesId}
+    </select>
+
+    <select id="getFilterQuesIdList" resultType="Integer" parameterType="com.qdu.qingyun.entity.VO.QuizStartReqVO">
+        select id
+        from quiz_ques
+        where quiz_id = #{id} LIMIT #{quesNum}
+    </select>
+
+
+    <select id="getOptionsByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.QuizOption">
+        select *
+        from quiz_option
+        where ques_id = #{quesId}
+    </select>
+
+    <select id="getFilesByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.QuizFile">
+        select media_type as type, url, `index`
+        from quiz_file
+        where owner_id = #{quesId}
+          and quiz_file_type_id = 1
+    </select>
+
+    <select id="getOtherNote" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizNotePO">
+        SELECT school_stu.`name` as userName,
+               quiz_note.id,
+               quiz_note.user_id,
+               quiz_note.body,
+               quiz_note.view_count,
+               quiz_note.create_time,
+               quiz_note.quiz_id,
+               quiz_note.is_public
+        from quiz_note
+                 INNER JOIN school_stu on quiz_note.user_id = school_stu.ss_number
+        where quiz_note.is_public = 1
+          and quiz_note.ques_id = #{quesId}
+          and quiz_note.id != #{defaultNoteId}
+    </select>
+
+    <select id="getNoteByNoteId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizNotePO">
+        SELECT school_stu.`name` as userName,
+               quiz_note.id,
+               quiz_note.user_id,
+               quiz_note.body,
+               quiz_note.view_count,
+               quiz_note.create_time,
+               quiz_note.quiz_id,
+               quiz_note.is_public
+        from quiz_note
+                 INNER JOIN school_stu on quiz_note.user_id = school_stu.ss_number
+        where quiz_note.id = #{noteId}
+    </select>
+
+    <insert id="submitQuesRecorder" parameterType="com.qdu.qingyun.entity.VO.SubmitQuesRecorderReqVO">
+        insert into quiz_record_ques (user_id, create_time, user_input, is_correct, ques_id, quiz_id)
+        values (#{ssNumber}, NOW(), #{userInput}, #{isRight}, #{quesId}, #{quizId});
+    </insert>
 
 </mapper>

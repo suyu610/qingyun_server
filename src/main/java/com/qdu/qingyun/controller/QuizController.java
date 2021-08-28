@@ -1,17 +1,13 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.VO.QuizCateVO;
-import com.qdu.qingyun.entity.VO.Result;
-import com.qdu.qingyun.entity.VO.UserQuizPO;
+import com.qdu.qingyun.entity.VO.*;
 import com.qdu.qingyun.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -47,9 +43,9 @@ public class QuizController {
     // 根据ID获取题库信息
     @Authorization
     @GetMapping("/quiz/{quizId}")
-    public Result<UserQuizPO> getQuizById(@PathVariable int quizId,HttpServletRequest request) {
+    public Result<UserQuizPO> getQuizById(@PathVariable int quizId, HttpServletRequest request) {
         String ssNumber = ((String) request.getAttribute("ssNumber"));
-        return Result.ok(quizService.getQuizById(quizId,ssNumber));
+        return Result.ok(quizService.getQuizById(quizId, ssNumber));
     }
 
     // 添加题库
@@ -77,5 +73,23 @@ public class QuizController {
         return Result.ok(quizService.getQuesList(quizId, ssNumber));
     }
 
+    // 开始答题
+    @Authorization
+    @PostMapping("/core/startAnswer")
+    public Result<LinkedList<QuizQuesForAnswerVO>> startAnswer(@RequestBody QuizStartReqVO quizStartReqVO, HttpServletRequest request) {
+        String ssNumber = ((String) request.getAttribute("ssNumber"));
+        quizStartReqVO.setSsNumber(ssNumber);
+        return Result.ok(quizService.generatePaper(quizStartReqVO));
+    }
+
+    // 提交做题记录
+    @Authorization
+    @PostMapping("/core/submitQuesRecorder")
+    public Result submitQuesRecorder(@RequestBody SubmitQuesRecorderReqVO vo, HttpServletRequest request) {
+        String ssNumber = ((String) request.getAttribute("ssNumber"));
+        vo.setSsNumber(ssNumber);
+        System.out.println(vo);
+        return Result.ok(quizService.submitQuesRecorder(vo));
+    }
 
 }
