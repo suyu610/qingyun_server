@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   redis:
     database: 0
     host: 127.0.0.1
