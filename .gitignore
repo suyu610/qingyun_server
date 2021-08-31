@@ -4,9 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /tempDir/**
+
 ## 忽略生产环境的yml配置
-**/application-prod.yml
-**/application-local.yml
+application-prod.yml
+application-local.yml
 **/nav-log
 qingyun-log
 
