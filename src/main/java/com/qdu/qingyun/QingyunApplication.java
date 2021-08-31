@@ -16,5 +16,4 @@ public class QingyunApplication {
     public static void main(String[] args) {
         SpringApplication.run(QingyunApplication.class, args);
     }
-
 }
