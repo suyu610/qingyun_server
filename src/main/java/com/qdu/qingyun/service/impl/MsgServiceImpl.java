@@ -1,6 +1,6 @@
 package com.qdu.qingyun.service.impl;
 
-import com.qdu.qingyun.entity.PO.MsgPO;
+import com.qdu.qingyun.entity.Msg.MsgPO;
 import com.qdu.qingyun.mapper.MsgMapper;
 import com.qdu.qingyun.service.MsgService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,7 @@ import java.util.List;
 
 /**
  * @ClassName MsgService
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/7 20:20
  * @Version 1.0
  **/

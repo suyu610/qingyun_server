@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qdu.qingyun.mapper.DialogMapper">
 
-    <resultMap id="BaseResultMap" type="com.qdu.qingyun.entity.PO.DialogPO">
+    <resultMap id="BaseResultMap" type="com.qdu.qingyun.entity.Dialog.DialogPO">
         <result column="dialogId" jdbcType="INTEGER" property="dialogId" />
         <result column="content" jdbcType="VARCHAR" property="content" />
         <result column="title" jdbcType="VARCHAR" property="title" />
@@ -10,12 +10,12 @@
         <result column="author" jdbcType="VARCHAR" property="author" />
     </resultMap>
 
-    <select id="getNewDialog" resultType="com.qdu.qingyun.entity.PO.DialogPO">
+    <select id="getNewDialog" resultType="com.qdu.qingyun.entity.Dialog.DialogPO">
         select *
         from dialog order by dialogId desc limit 1
     </select>
 
-    <insert id="insertNewDialog" parameterType="com.qdu.qingyun.entity.PO.DialogPO">
+    <insert id="insertNewDialog" parameterType="com.qdu.qingyun.entity.Dialog.DialogPO">
         insert into dialog(
             content,
             title,

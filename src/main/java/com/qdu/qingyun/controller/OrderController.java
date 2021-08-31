@@ -2,8 +2,8 @@ package com.qdu.qingyun.controller;
 
 import com.alibaba.druid.util.StringUtils;
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.VO.OrderAddReqVO;
-import com.qdu.qingyun.entity.VO.Result;
+import com.qdu.qingyun.entity.Order.OrderAddReqVO;
+import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.service.OrderService;
 import com.qdu.qingyun.util.IPUtil;
 import org.springframework.beans.factory.annotation.Autowired;

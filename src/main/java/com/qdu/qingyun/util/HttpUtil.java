@@ -2,8 +2,7 @@ package com.qdu.qingyun.util;
 
 /**
  * @ClassName HttpUtil
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/13 19:58
  * @Version 1.0
  **/

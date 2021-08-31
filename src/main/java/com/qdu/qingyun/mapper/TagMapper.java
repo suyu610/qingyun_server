@@ -1,6 +1,6 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.VO.UserTagVO;
+import com.qdu.qingyun.entity.User.UserTagVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

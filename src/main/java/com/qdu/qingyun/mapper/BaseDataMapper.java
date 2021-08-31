@@ -1,7 +1,7 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.PO.BaseData.CollegePO;
-import com.qdu.qingyun.entity.PO.BaseData.MajorPO;
+import com.qdu.qingyun.entity.SchoolBaseData.CollegePO;
+import com.qdu.qingyun.entity.SchoolBaseData.MajorPO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

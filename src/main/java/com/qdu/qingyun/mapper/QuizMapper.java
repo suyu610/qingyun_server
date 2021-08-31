@@ -1,7 +1,7 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.PO.*;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.User.UserQuizPO;
+import com.qdu.qingyun.entity.Quiz.*;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -63,7 +63,9 @@ public interface QuizMapper {
     QuizQuesForAnswerVO getQuesAnswerBasicInfo(@Param("quesId") int quesId);
 
     // 符合条件的题目id列表
-    LinkedList<Integer> getFilterQuesIdList(QuizStartReqVO vo);
+    LinkedList<Integer> getAllQuesIdByQuizId(QuizStartReqVO vo);
+    LinkedList<Integer> getHasDoneQuesIdByQuizId(QuizStartReqVO vo);
+    LinkedList<Integer> getErrQuesIdByQuizId(QuizStartReqVO vo);
 
     LinkedList<QuizOption> getOptionsByQuesId(@Param("quesId") int quesId);
 
@@ -74,7 +76,14 @@ public interface QuizMapper {
     QuizNotePO getNoteByNoteId(@Param("noteId") int noteId);
 
     // 添加答题记录
-    int submitQuesRecorder(SubmitQuesRecorderReqVO vo);
+    int submitQuesRecorder(QuizQuesSubmitReqVO vo);
+
+    // 返回现在最大的id
+    int getMaxQuizId();
+
+    // 创建题库
+    int createQuiz(QuizPO quizPO);
+
 }
 
 

@@ -9,12 +9,12 @@
           and doc_id = #{docId}
     </select>
 
-    <insert id="addOrder" parameterType="com.qdu.qingyun.entity.VO.OrderAddReqVO">
+    <insert id="addOrder" parameterType="com.qdu.qingyun.entity.Order.OrderAddReqVO">
         insert into `order`(out_trade_no, create_time, buyer_ss_number, price, doc_id, address, comment)
         values (#{outTradeNo}, #{createTimeDateFormat}, #{buyerSsNumber}, #{price}, #{docId}, #{address}, #{comment})
     </insert>
 
-    <select id="getAllOrders" resultType="com.qdu.qingyun.entity.VO.OrderReqVO">
+    <select id="getAllOrders" resultType="com.qdu.qingyun.entity.Order.OrderReqVO">
         select doc_id,
                order.create_time  as boughtDate,
                user.name          as authorName,
@@ -29,7 +29,7 @@
 
     </select>
 
-    <select id="getAllSoldOrders" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.OrderSoldResVO">
+    <select id="getAllSoldOrders" parameterType="Integer" resultType="com.qdu.qingyun.entity.Order.OrderSoldResVO">
         select
                doc.title,
                order.doc_id,

@@ -2,8 +2,8 @@ package com.qdu.qingyun.controller;
 
 import com.alibaba.druid.util.StringUtils;
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.PO.MsgPO;
-import com.qdu.qingyun.entity.VO.Result;
+import com.qdu.qingyun.entity.Msg.MsgPO;
+import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.service.AdminService;
 import com.qdu.qingyun.service.MsgService;
 import org.springframework.beans.factory.annotation.Autowired;

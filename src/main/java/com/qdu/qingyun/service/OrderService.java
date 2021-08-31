@@ -1,9 +1,9 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.VO.MoneyRecordVO;
-import com.qdu.qingyun.entity.VO.OrderAddReqVO;
-import com.qdu.qingyun.entity.VO.OrderReqVO;
-import com.qdu.qingyun.entity.VO.OrderSoldResVO;
+import com.qdu.qingyun.entity.Order.MoneyRecordVO;
+import com.qdu.qingyun.entity.Order.OrderAddReqVO;
+import com.qdu.qingyun.entity.Order.OrderReqVO;
+import com.qdu.qingyun.entity.Order.OrderSoldResVO;
 
 import java.util.List;
 

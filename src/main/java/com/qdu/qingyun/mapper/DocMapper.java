@@ -1,6 +1,6 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.Doc.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

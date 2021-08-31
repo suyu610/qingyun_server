@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qdu.qingyun.mapper.BaseDataMapper">
-    <select id="getAllCollege" resultType="com.qdu.qingyun.entity.PO.BaseData.CollegePO">
+    <select id="getAllCollege" resultType="com.qdu.qingyun.entity.SchoolBaseData.CollegePO">
         select *
         from school_college
     </select>
 
-    <select id="getAllMajor" resultType="com.qdu.qingyun.entity.PO.BaseData.MajorPO">
+    <select id="getAllMajor" resultType="com.qdu.qingyun.entity.SchoolBaseData.MajorPO">
         select *
         from school_major
     </select>
 
-    <select id="getMajorByCollegeRealId" resultType="com.qdu.qingyun.entity.PO.BaseData.MajorPO">
+    <select id="getMajorByCollegeRealId" resultType="com.qdu.qingyun.entity.SchoolBaseData.MajorPO">
         select *
         from school_major
         where college_id = #{collegeId}

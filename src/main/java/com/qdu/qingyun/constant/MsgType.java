@@ -2,8 +2,7 @@ package com.qdu.qingyun.constant;
 
 /**
  * @ClassName MsgType
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/19 0:38
  * @Version 1.0
  **/

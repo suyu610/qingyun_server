@@ -1,7 +1,7 @@
 package com.qdu.qingyun.config;
 
 import com.alibaba.fastjson.JSON;
-import com.qdu.qingyun.entity.VO.Result;
+import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.util.JwtTokenUtil;
 import io.netty.util.internal.StringUtil;
 import org.springframework.stereotype.Service;

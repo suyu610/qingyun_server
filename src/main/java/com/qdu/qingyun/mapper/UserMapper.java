@@ -1,9 +1,9 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.BO.UserInitDataBO;
-import com.qdu.qingyun.entity.VO.LoginUserReqVO;
-import com.qdu.qingyun.entity.VO.UserProfileReqVO;
-import com.qdu.qingyun.entity.VO.UserProfileResVO;
+import com.qdu.qingyun.entity.User.UserInitDataBO;
+import com.qdu.qingyun.entity.User.LoginUserReqVO;
+import com.qdu.qingyun.entity.User.UserProfileReqVO;
+import com.qdu.qingyun.entity.User.UserProfileResVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

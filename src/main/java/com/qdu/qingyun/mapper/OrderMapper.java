@@ -1,8 +1,8 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.VO.OrderAddReqVO;
-import com.qdu.qingyun.entity.VO.OrderReqVO;
-import com.qdu.qingyun.entity.VO.OrderSoldResVO;
+import com.qdu.qingyun.entity.Order.OrderAddReqVO;
+import com.qdu.qingyun.entity.Order.OrderReqVO;
+import com.qdu.qingyun.entity.Order.OrderSoldResVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

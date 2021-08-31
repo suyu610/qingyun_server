@@ -1,7 +1,9 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.System.Result;
+import com.qdu.qingyun.entity.System.WeAppInitDataVO;
+import com.qdu.qingyun.entity.User.*;
 import com.qdu.qingyun.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -102,7 +104,7 @@ public class UserController {
     // 修改个人资料
     @Authorization
     @PostMapping("profile")
-    public Result modifyProfile(@RequestBody UserProfileReqVO vo,HttpServletRequest request){
+    public Result modifyProfile(@RequestBody UserProfileReqVO vo, HttpServletRequest request){
         String ssNumber = (String) request.getAttribute("ssNumber");
         if (ssNumber == null){
             return Result.error("非法请求");
@@ -139,7 +141,7 @@ public class UserController {
     // 插入标签
     @Authorization
     @GetMapping("insertTag")
-    public Result insertTag(@RequestBody UserTagVO userTagVO,HttpServletRequest request){
+    public Result insertTag(@RequestBody UserTagVO userTagVO, HttpServletRequest request){
         userTagVO.setOwnerUserId((String) request.getAttribute("ssNumber"));
         return Result.ok(userService.insertTag(userTagVO));
     }

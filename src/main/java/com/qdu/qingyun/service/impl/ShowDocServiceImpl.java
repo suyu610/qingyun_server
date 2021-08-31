@@ -3,7 +3,8 @@ package com.qdu.qingyun.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.Doc.*;
+import com.qdu.qingyun.entity.DocComment.DocCommentItemVO;
 import com.qdu.qingyun.mapper.BaseDataMapper;
 import com.qdu.qingyun.mapper.DocMapper;
 import com.qdu.qingyun.mapper.OrderMapper;
@@ -118,8 +119,8 @@ public class ShowDocServiceImpl implements ShowDocService {
         List<DocRelatedItemVO> relatedItemList = this.getRelatedDoc(docItemVO);
         docItemVO.setDocRelatedItemList(relatedItemList);
 
-        List<CommentItemVO> commentItemList = commentService.getCommentByDocId(id);
-        for (CommentItemVO commentItemVO : commentItemList) {
+        List<DocCommentItemVO> commentItemList = commentService.getCommentByDocId(id);
+        for (DocCommentItemVO commentItemVO : commentItemList) {
             commentItemVO.setLikeCount(commentService.getLikeCountByCommentId(commentItemVO.getId()));
             commentItemVO.setLiked(commentService.getIsLikedByCommentIdAndUserSSNumber(commentItemVO.getId(), ssNumber));
         }

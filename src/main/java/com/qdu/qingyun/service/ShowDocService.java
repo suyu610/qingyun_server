@@ -1,6 +1,6 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.Doc.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.List;
  **/
 public interface ShowDocService {
     List<DocItemVO> getHotDoc(int pageNum);
-    DocDetailItemVO getDocDetailById(int id,String ssNumber);
+    DocDetailItemVO getDocDetailById(int id, String ssNumber);
     List<DocStarItemVO> getStarDoc(String ssNumber);
     boolean unStar(String ssNumber,int docId);
     boolean star(String ssNumber,int docId);
     List<MyUploadDocVO> getMyDoc(String ssNumber);
     boolean togglePublished(String ssNumber,int docId);
-    DocPreviewVO preview(String ssNumber,int docId) throws IOException;
+    DocPreviewVO preview(String ssNumber, int docId) throws IOException;
 }

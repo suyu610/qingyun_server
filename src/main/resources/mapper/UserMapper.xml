@@ -27,7 +27,7 @@
         where ss_number = #{ssNumber}
     </select>
 
-    <insert id="initUser" parameterType="com.qdu.qingyun.entity.VO.LoginUserReqVO">
+    <insert id="initUser" parameterType="com.qdu.qingyun.entity.User.LoginUserReqVO">
         insert into user(name, ss_number, openid, password, create_time, last_login_time)
         values (#{name}, #{ssNumber}, #{openid}, #{password}, NOW(), NOW());
     </insert>
@@ -38,7 +38,7 @@
         where ss_number = #{ssNumber}
     </select>
 
-    <select id="getInitUserData" parameterType="String" resultType="com.qdu.qingyun.entity.BO.UserInitDataBO">
+    <select id="getInitUserData" parameterType="String" resultType="com.qdu.qingyun.entity.User.UserInitDataBO">
         select remain_money,
                avatar_url,
                college_name,
@@ -58,7 +58,7 @@
         where user.ss_number = #{ssNumber}
     </select>
 
-    <select id="getProfileByNumber" resultType="com.qdu.qingyun.entity.VO.UserProfileResVO">
+    <select id="getProfileByNumber" resultType="com.qdu.qingyun.entity.User.UserProfileResVO">
         SELECT name,
                like_count,
                be_star_count as starCount,
@@ -71,7 +71,7 @@
         from user
         where user.ss_number = #{ssNumber}    </select>
 
-    <update id="modifyProfile" parameterType="com.qdu.qingyun.entity.VO.UserProfileReqVO">
+    <update id="modifyProfile" parameterType="com.qdu.qingyun.entity.User.UserProfileReqVO">
 
         update user
         <set>

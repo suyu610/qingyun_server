@@ -1,7 +1,7 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.VO.CategoryItemVO;
-import com.qdu.qingyun.entity.VO.DocItemVO;
+import com.qdu.qingyun.entity.Doc.CategoryItemVO;
+import com.qdu.qingyun.entity.Doc.DocItemVO;
 
 import java.util.List;
 import java.util.Map;

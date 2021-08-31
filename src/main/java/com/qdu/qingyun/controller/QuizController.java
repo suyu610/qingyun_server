@@ -1,12 +1,20 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReqVO;
+import com.qdu.qingyun.entity.System.Result;
+import com.qdu.qingyun.entity.User.UserQuizPO;
+import com.qdu.qingyun.entity.Quiz.QuizCateVO;
+import com.qdu.qingyun.entity.Quiz.QuizQuesForAnswerVO;
+import com.qdu.qingyun.entity.Quiz.QuizStartReqVO;
 import com.qdu.qingyun.service.QuizService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +61,6 @@ public class QuizController {
     @GetMapping("/quiz/add/{quizId}")
     public Result addQuiz(@PathVariable int quizId, HttpServletRequest request) {
         String ssNumber = ((String) request.getAttribute("ssNumber"));
-        System.out.println(ssNumber);
         return Result.ok(quizService.addQuiz(quizId, ssNumber));
     }
 
@@ -85,11 +92,31 @@ public class QuizController {
     // 提交做题记录
     @Authorization
     @PostMapping("/core/submitQuesRecorder")
-    public Result submitQuesRecorder(@RequestBody SubmitQuesRecorderReqVO vo, HttpServletRequest request) {
+    public Result submitQuesRecorder(@RequestBody QuizQuesSubmitReqVO vo, HttpServletRequest request) {
         String ssNumber = ((String) request.getAttribute("ssNumber"));
         vo.setSsNumber(ssNumber);
-        System.out.println(vo);
         return Result.ok(quizService.submitQuesRecorder(vo));
     }
 
+    // 获取用户已订阅了的题库的信息，包括[ 该月的做题记录 ]，错题本数量，收藏本数量，该题库笔记数量， [ todo 学习时长 ] ，评论数
+    @Authorization
+    @GetMapping("/core/getUserSubQuizInfo/{quizId}")
+    public Result getUserSubQuizInfo(@PathVariable int quizId, HttpServletRequest request) {
+        String ssNumber = ((String) request.getAttribute("ssNumber"));
+        return Result.ok(quizService.getUserSubQuizInfo(quizId));
+    }
+
+    // 读取excel
+    @ApiOperation(value = "读取excel")
+    @PostMapping("/core/uploadQuizByExcel")
+    @ResponseBody
+    public Result uploadExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        String ssNumber = "2019205913";
+        String result = quizService.importQuiz(file,ssNumber);
+        if(result.equals("成功")){
+            return Result.ok("成功");
+        }else{
+            return Result.error(result);
+        }
+    }
 }

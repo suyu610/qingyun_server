@@ -1,7 +1,7 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.BO.UserInitDataBO;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.System.WeAppInitDataVO;
+import com.qdu.qingyun.entity.User.*;
 
 import javax.servlet.http.HttpServletRequest;
 

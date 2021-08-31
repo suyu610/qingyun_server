@@ -3,8 +3,8 @@ package com.qdu.qingyun.service.impl;
 import com.qcloud.cos.model.COSObjectSummary;
 import com.qcloud.cos.model.ObjectListing;
 import com.qdu.qingyun.config.TencentCosConfig;
-import com.qdu.qingyun.entity.VO.DocGeneratePreviewImageItemVO;
-import com.qdu.qingyun.entity.VO.DocUploadVO;
+import com.qdu.qingyun.entity.Doc.DocGeneratePreviewImageItemVO;
+import com.qdu.qingyun.entity.Doc.DocUploadVO;
 import com.qdu.qingyun.mapper.DocMapper;
 import com.qdu.qingyun.service.UploadService;
 import com.qdu.qingyun.util.HttpUtil;
@@ -26,8 +26,7 @@ import java.util.TreeMap;
 
 /**
  * @ClassName UploadServiceImpl
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/10 6:15
  * @Version 1.0
  **/

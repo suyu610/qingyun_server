@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qdu.qingyun.mapper.CommentMapper">
-    <select id="getCommentByDocId" resultType="com.qdu.qingyun.entity.VO.CommentItemVO">
+    <select id="getCommentByDocId" resultType="com.qdu.qingyun.entity.DocComment.DocCommentItemVO">
         select doc_comment.id,
                doc_comment.create_time,
                content,
@@ -25,7 +25,7 @@
         where (comment_id = #{commentId} and ss_number = #{ssNumber} and DELETED = 0)
     </select>
 
-    <insert id="insertNewComment" parameterType="com.qdu.qingyun.entity.VO.CommentReqVO">
+    <insert id="insertNewComment" parameterType="com.qdu.qingyun.entity.DocComment.DocCommentReqVO">
         insert into doc_comment (doc_id, create_time, content, user_ss_number)
         values (#{docId}, NOW(), #{content}, #{ssNumber});
     </insert>

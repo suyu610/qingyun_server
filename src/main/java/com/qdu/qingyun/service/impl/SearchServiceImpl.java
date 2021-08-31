@@ -1,6 +1,6 @@
 package com.qdu.qingyun.service.impl;
 
-import com.qdu.qingyun.entity.VO.DocSearchResVO;
+import com.qdu.qingyun.entity.Doc.DocSearchResVO;
 import com.qdu.qingyun.mapper.DocMapper;
 import com.qdu.qingyun.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,7 @@ import java.util.List;
 
 /**
  * @ClassName SearchServiceImpl
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/20 9:46
  * @Version 1.0
  **/

@@ -1,10 +1,10 @@
 package com.qdu.qingyun.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
-import com.qdu.qingyun.entity.PO.BaseData.CollegePO;
-import com.qdu.qingyun.entity.PO.BaseData.MajorPO;
-import com.qdu.qingyun.entity.VO.CategoryItemVO;
-import com.qdu.qingyun.entity.VO.DocItemVO;
+import com.qdu.qingyun.entity.SchoolBaseData.CollegePO;
+import com.qdu.qingyun.entity.SchoolBaseData.MajorPO;
+import com.qdu.qingyun.entity.Doc.CategoryItemVO;
+import com.qdu.qingyun.entity.Doc.DocItemVO;
 import com.qdu.qingyun.mapper.BaseDataMapper;
 import com.qdu.qingyun.mapper.DocMapper;
 import com.qdu.qingyun.service.CategoryService;

@@ -1,7 +1,7 @@
 package com.qdu.qingyun.service.impl;
 
-import com.qdu.qingyun.entity.VO.CommentItemVO;
-import com.qdu.qingyun.entity.VO.CommentReqVO;
+import com.qdu.qingyun.entity.DocComment.DocCommentItemVO;
+import com.qdu.qingyun.entity.DocComment.DocCommentReqVO;
 import com.qdu.qingyun.mapper.CommentMapper;
 import com.qdu.qingyun.service.CommentService;
 import com.qdu.qingyun.service.OrderService;
@@ -12,8 +12,7 @@ import java.util.List;
 
 /**
  * @ClassName CommentServiceImpl
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/13 1:33
  * @Version 1.0
  **/
@@ -26,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
     OrderService orderService;
 
     @Override
-    public List<CommentItemVO> getCommentByDocId(int docId) {
+    public List<DocCommentItemVO> getCommentByDocId(int docId) {
         return commentMapper.getCommentByDocId(docId);
     }
 
@@ -41,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public boolean insertNewComment(CommentReqVO commentItemVO) {
+    public boolean insertNewComment(DocCommentReqVO commentItemVO) {
         // 先看这个用户是否购买了文档
         //
         if(!orderService.hasBought(commentItemVO.getSsNumber(),commentItemVO.getDocId())){

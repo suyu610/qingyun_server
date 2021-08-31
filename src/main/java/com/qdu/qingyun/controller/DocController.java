@@ -1,7 +1,11 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.VO.*;
+import com.qdu.qingyun.entity.Doc.DocItemVO;
+import com.qdu.qingyun.entity.Doc.DocPreviewVO;
+import com.qdu.qingyun.entity.Doc.DocStarItemVO;
+import com.qdu.qingyun.entity.Doc.DocUploadVO;
+import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.service.ShowDocService;
 import com.qdu.qingyun.service.UploadService;
 import com.qdu.qingyun.util.JwtTokenUtil;
@@ -17,8 +21,7 @@ import java.util.List;
 
 /**
  * @ClassName FileController
- * @Description TODO..
- * @Author 23580
+
  * @Date 2021/6/9 23:17
  * @Version 1.0
  **/
@@ -165,7 +168,7 @@ public class DocController {
      * @Description 在线预览
      * @Date 2021/6/18 4:00
      * @Param [docId, request]
-     * @return com.qdu.qingyun.entity.VO.Result
+     * @return com.qdu.qingyun.entity.System.Result
      **/
     @GetMapping("preview/{docId}/{token}")
     public Result preview(@PathVariable int docId, @PathVariable String token) {

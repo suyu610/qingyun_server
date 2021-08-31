@@ -6,6 +6,9 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +20,16 @@ import java.util.regex.Pattern;
  * @Version 1.0
  **/
 public class StringUtil {
+
+    public static LinkedList listrem(List listA, List listB) {
+        HashSet hs1 = new HashSet(listA);
+        HashSet hs2 = new HashSet(listB);
+        hs1.removeAll(hs2);
+        LinkedList listC = new LinkedList();
+        listC.addAll(hs1);
+        return listC;
+    }
+
     /*
      * @Description 1级分类：AA0000 2级分类 AABB00  3级分类 AABBCC
      * @Date 2021/6/8 14:27
@@ -65,6 +78,7 @@ public class StringUtil {
 
     /**
      * 获取汉字串拼音首字母，英文字符不变
+     *
      * @param chinese 汉字串
      * @return 汉语拼音首字母
      */
@@ -80,7 +94,7 @@ public class StringUtil {
             if (arr[i] > 128) {
                 try {
                     String[] temp = PinyinHelper.toHanyuPinyinStringArray(arr[i], defaultFormat);
-                    if (temp != null && temp.length > 0){
+                    if (temp != null && temp.length > 0) {
                         pybf.append(temp[0].charAt(0));
                     }
                 } catch (BadHanyuPinyinOutputFormatCombination e) {

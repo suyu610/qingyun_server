@@ -1,6 +1,6 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.PO.MsgPO;
+import com.qdu.qingyun.entity.Msg.MsgPO;
 
 import java.util.List;
 

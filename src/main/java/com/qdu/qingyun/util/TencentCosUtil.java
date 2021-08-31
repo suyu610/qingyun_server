@@ -26,8 +26,7 @@ public class TencentCosUtil {
     private static ClientConfig clientConfig = new ClientConfig(new Region(TencentCosConfig.getRegion()));
 
     /**
-     * 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20 M 以下的文件使用该接口 大文件上传请参照 API 文档高级 API 上传
-     *
+     * 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20 M 以下的文件使用该接口 大文件上传请参照 API 文档高级 API 上
      * @param localFile 要上传的文件
      */
     public static String uploadFile(File localFile, String pathPrefix, String onlyFileName) {
@@ -82,7 +81,7 @@ public class TencentCosUtil {
 
 
     /*
-    生成临时上传链接
+        生成临时上传链接
      */
 
     public static String getUploadUrl(String key, int expireMinutes) throws IOException {

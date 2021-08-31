@@ -1,6 +1,6 @@
 package com.qdu.qingyun.service;
 
-import com.qdu.qingyun.entity.VO.DocUploadVO;
+import com.qdu.qingyun.entity.Doc.DocUploadVO;
 import org.json.JSONObject;
 
 import java.io.IOException;

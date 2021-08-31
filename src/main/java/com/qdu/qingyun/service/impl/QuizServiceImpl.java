@@ -1,18 +1,23 @@
 package com.qdu.qingyun.service.impl;
 
-import com.qdu.qingyun.entity.PO.QuizChapterPO;
-import com.qdu.qingyun.entity.PO.QuizPO;
-import com.qdu.qingyun.entity.PO.QuizQuesPO;
-import com.qdu.qingyun.entity.PO.QuizSectionPO;
-import com.qdu.qingyun.entity.VO.*;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.PrimitiveArrayUtil;
+import com.qdu.qingyun.entity.Quiz.QuizChapterPO;
+import com.qdu.qingyun.entity.Quiz.QuizPO;
+import com.qdu.qingyun.entity.Quiz.QuizQuesPO;
+import com.qdu.qingyun.entity.Quiz.QuizSectionPO;
+import com.qdu.qingyun.entity.User.UserQuizPO;
+import com.qdu.qingyun.entity.Quiz.*;
 import com.qdu.qingyun.mapper.QuizMapper;
 import com.qdu.qingyun.service.QuizService;
+import com.qdu.qingyun.util.ExcelUtil;
+import com.qdu.qingyun.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 @Service("QuizService")
 public class QuizServiceImpl implements QuizService {
@@ -112,20 +117,46 @@ public class QuizServiceImpl implements QuizService {
         return vo;
     }
 
+
     @Override
     public LinkedList<QuizQuesForAnswerVO> generatePaper(QuizStartReqVO vo) {
-        // all undo smart
-        String mode = vo.getPracticeMode();
         LinkedList<QuizQuesForAnswerVO> quesList = new LinkedList<>();
+        LinkedList<Integer> quesIdList = new LinkedList<>();
 
-        // 筛选【符合条件】的题目 id 列表
-        LinkedList<Integer> quesIdList = quizMapper.getFilterQuesIdList(vo);
+        // all undo err
+        String mode = vo.getPracticeMode();
+
+        // 全部题目
+        if (mode.equals("all")) {
+            // 筛选【符合条件】的题目 id 列表
+            quesIdList = quizMapper.getAllQuesIdByQuizId(vo);
+        }
+
+        //  错题模式
+        if (mode.equals("err")) {
+            quesIdList = quizMapper.getErrQuesIdByQuizId(vo);
+            // 去重
+            Set set = new HashSet();
+            set.addAll(quesIdList);
+            quesIdList.clear();
+            quesIdList.addAll(set);
+        }
+
+        // 没有做的题目
+        // 用全部题目 减去 已经做过的题
+        if (mode.equals("undo")) {
+            quesIdList = quizMapper.getAllQuesIdByQuizId(vo);
+            LinkedList hasDoneQuesIdList = quizMapper.getHasDoneQuesIdByQuizId(vo);
+            quesIdList = StringUtil.listrem(quesIdList, hasDoneQuesIdList);
+        }
+
 
         // 然后挨个调用【 getQuesById 】
         for (int quesId : quesIdList
         ) {
             quesList.add(this.getQuesById(quesId));
         }
+
         // 然后通过【 学号 】获取是否star [todo]
         // 添加用户笔记[todo]
 
@@ -133,8 +164,47 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public boolean submitQuesRecorder(SubmitQuesRecorderReqVO vo) {
+    public boolean submitQuesRecorder(QuizQuesSubmitReqVO vo) {
         return quizMapper.submitQuesRecorder(vo) > 0;
+    }
+
+    @Override
+    public QuizPO getUserSubQuizInfo(int quizId) {
+        return null;
+    }
+
+    @Override
+    public String importQuiz(MultipartFile file, String ssNumber) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String pattern = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (file != null) {
+            if (!ExcelUtil.isExcel(file)) {
+                return "不是excel文件";
+            } else {
+                QuizImportVO quiz = ExcelUtil.getExcelToQuizImportVO(file, pattern);
+
+                String title = quiz.getTitle();
+                String desc = quiz.getDesc();
+                String cate = quiz.getCateStr();
+
+                String[] typeArr = new String[]{"考证", "考研", "公共课", "理科", "工科", "文科", "艺术类"};
+
+                int cateId = ArrayUtil.indexOf(typeArr, cate);
+                // 没找到对应的分类名
+                if (cateId == PrimitiveArrayUtil.INDEX_NOT_FOUND) {
+                    return "分类名不对";
+                }
+                if (io.netty.util.internal.StringUtil.isNullOrEmpty(title)) {
+                    return "题库标题为空";
+                }
+
+//                quizMapper.createQuiz(quizPO);
+//                int quizId = quizPO.getId();
+//                System.out.println(json);
+                return "成功";
+            }
+        }
+        return "文件打开失败";
     }
 
     // 获取一个题目的信息，这里可以 缓存

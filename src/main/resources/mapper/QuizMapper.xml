@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qdu.qingyun.mapper.QuizMapper">
 
-    <select id="getAllQuizCate" resultType="com.qdu.qingyun.entity.VO.QuizCateVO">
+    <select id="getAllQuizCate" resultType="com.qdu.qingyun.entity.Quiz.QuizCateVO">
         select *
         from quiz_cate
     </select>
 
-    <select id="getQuizPObyCateId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
+    <select id="getQuizPObyCateId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizPO">
         select quiz_quiz.id,
                quiz_quiz.title,
                quiz_quiz.desc,
@@ -20,26 +20,26 @@
         where cate_id = #{cateId}
     </select>
 
-    <select id="getChapterByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizChapterPO">
+    <select id="getChapterByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizChapterPO">
         select *, (select count(*) from quiz_ques where quiz_ques.quiz_id = quiz_chapter.id) as totalNum
         from quiz_chapter
         where quiz_id = #{quizId}
     </select>
 
-    <select id="getSectionByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizSectionPO">
+    <select id="getSectionByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizSectionPO">
         select *, (select count(*) from quiz_ques where quiz_ques.section_id = quiz_section.id) as totalNum
         from quiz_section
         where quiz_id = #{quizId}
     </select>
 
-    <select id="getQuesByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizQuesPO">
+    <select id="getQuesByQuizId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizQuesPO">
         select *
         from quiz_ques
         where quiz_id = #{quizId} limit 50
     </select>
 
 
-    <select id="getUserQuiz" parameterType="String" resultType="com.qdu.qingyun.entity.VO.UserQuizPO">
+    <select id="getUserQuiz" parameterType="String" resultType="com.qdu.qingyun.entity.User.UserQuizPO">
         select quiz_quiz.title,
                quiz_quiz.id,
                (select count(*)
@@ -98,7 +98,7 @@
           and user_id = #{ssNumber}
     </select>
 
-    <select id="getQuizById" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizPO">
+    <select id="getQuizById" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizPO">
         select quiz_quiz.id,
                quiz_quiz.title,
                quiz_quiz.desc,
@@ -125,7 +125,7 @@
     </delete>
 
     <select id="getQuesAnswerBasicInfo" parameterType="Integer"
-            resultType="com.qdu.qingyun.entity.VO.QuizQuesForAnswerVO">
+            resultType="com.qdu.qingyun.entity.Quiz.QuizQuesForAnswerVO">
         select id,
                title,
                score,
@@ -139,27 +139,43 @@
         where id = #{quesId}
     </select>
 
-    <select id="getFilterQuesIdList" resultType="Integer" parameterType="com.qdu.qingyun.entity.VO.QuizStartReqVO">
+    <!---->
+    <select id="getAllQuesIdByQuizId" resultType="Integer" parameterType="com.qdu.qingyun.entity.Quiz.QuizStartReqVO">
         select id
         from quiz_ques
         where quiz_id = #{id} LIMIT #{quesNum}
     </select>
 
+    <select id="getHasDoneQuesIdByQuizId" resultType="Integer" parameterType="com.qdu.qingyun.entity.Quiz.QuizStartReqVO">
+        select ques_id as id
+        from quiz_record_ques
+        where quiz_id = #{id}
+          and user_id = #{ssNumber}
+    </select>
 
-    <select id="getOptionsByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.QuizOption">
+    <select id="getErrQuesIdByQuizId" resultType="Integer" parameterType="com.qdu.qingyun.entity.Quiz.QuizStartReqVO">
+        select ques_id as id
+        from quiz_record_ques
+        where quiz_id = #{id}
+          and user_id = #{ssNumber}
+          and is_correct = 0
+    </select>
+    <!---->
+
+    <select id="getOptionsByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizOption">
         select *
         from quiz_option
         where ques_id = #{quesId}
     </select>
 
-    <select id="getFilesByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.VO.QuizFile">
+    <select id="getFilesByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizFile">
         select media_type as type, url, `index`
         from quiz_file
         where owner_id = #{quesId}
           and quiz_file_type_id = 1
     </select>
 
-    <select id="getOtherNote" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizNotePO">
+    <select id="getOtherNote" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizNotePO">
         SELECT school_stu.`name` as userName,
                quiz_note.id,
                quiz_note.user_id,
@@ -175,7 +191,7 @@
           and quiz_note.id != #{defaultNoteId}
     </select>
 
-    <select id="getNoteByNoteId" parameterType="Integer" resultType="com.qdu.qingyun.entity.PO.QuizNotePO">
+    <select id="getNoteByNoteId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizNotePO">
         SELECT school_stu.`name` as userName,
                quiz_note.id,
                quiz_note.user_id,
@@ -189,9 +205,21 @@
         where quiz_note.id = #{noteId}
     </select>
 
-    <insert id="submitQuesRecorder" parameterType="com.qdu.qingyun.entity.VO.SubmitQuesRecorderReqVO">
+    <insert id="submitQuesRecorder" parameterType="com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReqVO">
         insert into quiz_record_ques (user_id, create_time, user_input, is_correct, ques_id, quiz_id)
         values (#{ssNumber}, NOW(), #{userInput}, #{isRight}, #{quesId}, #{quizId});
     </insert>
+
+    <select id="getMaxQuizId" resultType="Integer">
+        select max(id)
+        from quiz_quiz;
+    </select>
+
+    <insert id="createQuiz" parameterType="com.qdu.qingyun.entity.Quiz.QuizPO" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into quiz_quiz (user_id, update_time, cate_id, title, `desc`)
+        values (#{authorId}, NOW(), #{cateId}, #{title}, #{desc});
+    </insert>
+
 
 </mapper>

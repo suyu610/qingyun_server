@@ -9,7 +9,7 @@
           and ss_number = #{ssNumber}
     </update>
 
-    <select id="getHotDoc" resultType="com.qdu.qingyun.entity.VO.DocItemVO">
+    <select id="getHotDoc" resultType="com.qdu.qingyun.entity.Doc.DocItemVO">
         select doc.id,
                title,
                doc.introduce,
@@ -28,7 +28,7 @@
         order by star_count
     </select>
 
-    <select id="getDocListByCourseName" resultType="com.qdu.qingyun.entity.VO.DocItemVO">
+    <select id="getDocListByCourseName" resultType="com.qdu.qingyun.entity.Doc.DocItemVO">
         select doc.id,
                title,
                doc.introduce,
@@ -49,7 +49,7 @@
     </select>
 
 
-    <select id="getDocDetailById" resultType="com.qdu.qingyun.entity.VO.DocDetailItemVO">
+    <select id="getDocDetailById" resultType="com.qdu.qingyun.entity.Doc.DocDetailItemVO">
         select doc.id,
                doc.bought_count,
                doc.ss_number,
@@ -76,13 +76,13 @@
     </select>
 
     <select id="getDocGeneratePreviewImageItemById"
-            resultType="com.qdu.qingyun.entity.VO.DocGeneratePreviewImageItemVO">
+            resultType="com.qdu.qingyun.entity.Doc.DocGeneratePreviewImageItemVO">
         select id, ss_number, preview_page_count as previewImageCount, doc_file_dir
         from doc
         where id = #{docId}
     </select>
 
-    <select id="getRelatedDocByCategoryId" resultType="com.qdu.qingyun.entity.VO.DocRelatedItemVO">
+    <select id="getRelatedDocByCategoryId" resultType="com.qdu.qingyun.entity.Doc.DocRelatedItemVO">
         select doc.id, title, doc_preview_img.url as previewImageUrl, type_id, doc_type.type_key as docuType
         from doc
                  inner join doc_type on doc.type_id = doc_type.id
@@ -94,7 +94,7 @@
             limit 5
     </select>
 
-    <select id="getDocBySsNumber" resultType="com.qdu.qingyun.entity.VO.DocRelatedItemVO">
+    <select id="getDocBySsNumber" resultType="com.qdu.qingyun.entity.Doc.DocRelatedItemVO">
         select doc.id, title, type_id, doc_type.type_key as docuType
         from doc
                  inner join doc_type on doc.type_id = doc_type.id
@@ -130,7 +130,7 @@
         where doc_id = #{id}
     </select>
 
-    <insert id="insertDoc" parameterType="com.qdu.qingyun.entity.VO.DocUploadVO" useGeneratedKeys="true"
+    <insert id="insertDoc" parameterType="com.qdu.qingyun.entity.Doc.DocUploadVO" useGeneratedKeys="true"
             keyProperty="id">
         insert into doc(title, introduce, category_id, type_id, price, course_name, user_openid, upload_time,
                         preview_page_count, ss_number, doc_file_dir)
@@ -166,7 +166,7 @@
           and is_published = 1
     </select>
 
-    <select id="getStarDoc" resultType="com.qdu.qingyun.entity.VO.DocStarItemVO">
+    <select id="getStarDoc" resultType="com.qdu.qingyun.entity.Doc.DocStarItemVO">
         SELECT uds.doc_id    as id,
                doc.title,
                doc.price,
@@ -212,7 +212,7 @@
           and DELETED = 0
     </select>
 
-    <select id="getMyDoc" resultType="com.qdu.qingyun.entity.VO.MyUploadDocVO">
+    <select id="getMyDoc" resultType="com.qdu.qingyun.entity.Doc.MyUploadDocVO">
         select title,
                doc.id,
                introduce,
@@ -234,7 +234,7 @@
         where ss_number = #{ssNumber}
     </select>
 
-    <select id="searchByKeyword" resultType="com.qdu.qingyun.entity.VO.DocSearchResVO">
+    <select id="searchByKeyword" resultType="com.qdu.qingyun.entity.Doc.DocSearchResVO">
         select title, id as docId, user.name as authorName,course_name
         from doc
                  inner join user on doc.ss_number = user.ss_number

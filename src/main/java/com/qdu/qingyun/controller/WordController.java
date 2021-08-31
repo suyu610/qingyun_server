@@ -1,6 +1,6 @@
 package com.qdu.qingyun.controller;
 
-import com.qdu.qingyun.entity.VO.Result;
+import com.qdu.qingyun.entity.System.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

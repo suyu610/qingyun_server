@@ -1,6 +1,6 @@
 package com.qdu.qingyun.mapper;
 
-import com.qdu.qingyun.entity.PO.MsgPO;
+import com.qdu.qingyun.entity.Msg.MsgPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
