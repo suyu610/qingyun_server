@@ -17,7 +17,7 @@ jwt:
 tencent:
   cos:
     secretId: xxx
-    secretKey: xxx
+    secretKey: xxx12
     region: ap-beijing
     bucketName: qingyun-file-1254798469
     path: https://qingyun-file-1254798469.cos.ap-beijing.myqcloud.com
