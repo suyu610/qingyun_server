@@ -2,10 +2,10 @@ package com.qdu.qingyun.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.PrimitiveArrayUtil;
-import com.qdu.qingyun.entity.Quiz.QuizChapterPO;
-import com.qdu.qingyun.entity.Quiz.QuizPO;
-import com.qdu.qingyun.entity.Quiz.QuizQuesPO;
-import com.qdu.qingyun.entity.Quiz.QuizSectionPO;
+import com.qdu.qingyun.entity.Quiz.QuizChapter;
+import com.qdu.qingyun.entity.Quiz.Quiz;
+import com.qdu.qingyun.entity.Quiz.QuizQues;
+import com.qdu.qingyun.entity.Quiz.QuizSection;
 import com.qdu.qingyun.entity.User.UserQuizPO;
 import com.qdu.qingyun.entity.Quiz.*;
 import com.qdu.qingyun.mapper.QuizMapper;
@@ -25,11 +25,11 @@ public class QuizServiceImpl implements QuizService {
     QuizMapper quizMapper;
 
     @Override
-    public LinkedList<QuizCateVO> getAllQuiz() {
-        LinkedList<QuizCateVO> totalCate = quizMapper.getAllQuizCate();
-        for (QuizCateVO quizCate : totalCate) {
-            LinkedList<QuizPO> quizList = quizMapper.getQuizPObyCateId(quizCate.getId());
-            for (QuizPO quiz : quizList
+    public LinkedList<QuizCate> getAllQuiz() {
+        LinkedList<QuizCate> totalCate = quizMapper.getAllQuizCate();
+        for (QuizCate quizCate : totalCate) {
+            LinkedList<Quiz> quizList = quizMapper.getQuizPObyCateId(quizCate.getId());
+            for (Quiz quiz : quizList
             ) {
                 System.out.println(quiz.getId());
                 int addNum = quizMapper.getAddNumber(quiz.getId());
@@ -47,8 +47,8 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizPO getQuizById(int id, String ssNumber) {
-        QuizPO quizPO = quizMapper.getQuizById(id);
+    public Quiz getQuizById(int id, String ssNumber) {
+        Quiz quizPO = quizMapper.getQuizById(id);
         if (quizPO != null) {
             quizPO.setTotalQuizNum(quizMapper.getAddNumber(id));
             quizPO.setUserAddNum(quizMapper.getNoteNumber(id));
@@ -71,22 +71,18 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizQuesListVO getQuesList(int quizId, String ssNumber) {
-        QuizQuesListVO vo = new QuizQuesListVO();
-        Map<Integer, QuizChapterPO> quizChapterMap = quizMapper.getChapterByQuizId(quizId);
+    public QuizQuesList getQuesList(int quizId, String ssNumber) {
+        QuizQuesList vo = new QuizQuesList();
+        Map<Integer, QuizChapter> quizChapterMap = quizMapper.getChapterByQuizId(quizId);
         // 让他返回一个map
-        Map<Integer, QuizSectionPO> quizSectionMap = quizMapper.getSectionByQuizId(quizId);
+        Map<Integer, QuizSection> quizSectionMap = quizMapper.getSectionByQuizId(quizId);
 
-        List<QuizQuesPO> quizQuesList = quizMapper.getQuesByQuizId(quizId);
-
-        System.out.println(quizChapterMap);
-        System.out.println(quizSectionMap);
-        System.out.println(quizQuesList);
+        List<QuizQues> quizQuesList = quizMapper.getQuesByQuizId(quizId);
 
         System.out.println();
-        for (QuizQuesPO ques : quizQuesList) {
+        for (QuizQues ques : quizQuesList) {
             if (quizSectionMap.get(ques.getSectionId()).getQuizQuesList() == null) {
-                quizSectionMap.get(ques.getSectionId()).setQuizQuesList(new LinkedList<QuizQuesPO>());
+                quizSectionMap.get(ques.getSectionId()).setQuizQuesList(new LinkedList<QuizQues>());
             }
             quizSectionMap.get(ques.getSectionId()).getQuizQuesList().push(ques);
         }
@@ -94,13 +90,13 @@ public class QuizServiceImpl implements QuizService {
 
         for (Integer key : quizSectionMap.keySet()) {
             if (quizChapterMap.get(quizSectionMap.get(key).getChapterId()).getQuizSectionList() == null) {
-                quizChapterMap.get(quizSectionMap.get(key).getChapterId()).setQuizSectionList(new LinkedList<QuizSectionPO>());
+                quizChapterMap.get(quizSectionMap.get(key).getChapterId()).setQuizSectionList(new LinkedList<QuizSection>());
             }
             quizChapterMap.get(quizSectionMap.get(key).getChapterId()).getQuizSectionList().push(quizSectionMap.get(key));
         }
 
 
-        QuizPO quizPO = quizMapper.getQuizById(quizId);
+        Quiz quizPO = quizMapper.getQuizById(quizId);
         if (quizPO != null) {
             vo.setTitle(quizPO.getTitle());
             vo.setScore(quizPO.getScore());
@@ -119,8 +115,8 @@ public class QuizServiceImpl implements QuizService {
 
 
     @Override
-    public LinkedList<QuizQuesForAnswerVO> generatePaper(QuizStartReqVO vo) {
-        LinkedList<QuizQuesForAnswerVO> quesList = new LinkedList<>();
+    public LinkedList<QuizQuesForAnswer> generatePaper(QuizExamPreReqVO vo) {
+        LinkedList<QuizQuesForAnswer> quesList = new LinkedList<>();
         LinkedList<Integer> quesIdList = new LinkedList<>();
 
         // all undo err
@@ -164,12 +160,12 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public boolean submitQuesRecorder(QuizQuesSubmitReqVO vo) {
+    public boolean submitQuesRecorder(QuizQuesSubmitReq vo) {
         return quizMapper.submitQuesRecorder(vo) > 0;
     }
 
     @Override
-    public QuizPO getUserSubQuizInfo(int quizId) {
+    public Quiz getUserSubQuizInfo(int quizId) {
         return null;
     }
 
@@ -181,7 +177,7 @@ public class QuizServiceImpl implements QuizService {
             if (!ExcelUtil.isExcel(file)) {
                 return "不是excel文件";
             } else {
-                QuizImportVO quiz = ExcelUtil.getExcelToQuizImportVO(file, pattern);
+                QuizWhole quiz = ExcelUtil.getExcelToQuizImportVO(file, pattern);
 
                 String title = quiz.getTitle();
                 String desc = quiz.getDesc();
@@ -208,28 +204,28 @@ public class QuizServiceImpl implements QuizService {
     }
 
     // 获取一个题目的信息，这里可以 缓存
-    public QuizQuesForAnswerVO getQuesById(int quesId) {
+    public QuizQuesForAnswer getQuesById(int quesId) {
         // 基础信息
-        QuizQuesForAnswerVO quizQuesForAnswerVO = quizMapper.getQuesAnswerBasicInfo(quesId);
-        quizQuesForAnswerVO.setAnswer(quizQuesForAnswerVO.getAnswerStr().split("&#&"));
+        QuizQuesForAnswer quizQuesForAnswer = quizMapper.getQuesAnswerBasicInfo(quesId);
+        quizQuesForAnswer.setAnswer(quizQuesForAnswer.getAnswerStr().split("&#&"));
         // 挨个添加options
         LinkedList<QuizOption> optionList = quizMapper.getOptionsByQuesId(quesId);
-        quizQuesForAnswerVO.setOptions(optionList);
+        quizQuesForAnswer.setOptions(optionList);
 
         // 添加题目的附件
         LinkedList<QuizFile> fileList = quizMapper.getFilesByQuesId(quesId);
-        quizQuesForAnswerVO.setFiles(fileList);
+        quizQuesForAnswer.setFiles(fileList);
 
         // 添加选项的附件 [todo]
 
         // 添加默认笔记
-        quizQuesForAnswerVO.setDefaultNote(quizMapper.getNoteByNoteId(quizQuesForAnswerVO.getDefaultNoteId()));
+        quizQuesForAnswer.setDefaultNote(quizMapper.getNoteByNoteId(quizQuesForAnswer.getDefaultNoteId()));
 
         // 添加其他人的笔记
-        quizQuesForAnswerVO.setOtherNote(quizMapper.getOtherNote(quesId, quizQuesForAnswerVO.getDefaultNoteId()));
+        quizQuesForAnswer.setOtherNote(quizMapper.getOtherNote(quesId, quizQuesForAnswer.getDefaultNoteId()));
 
 
-        return quizQuesForAnswerVO;
+        return quizQuesForAnswer;
     }
 
 

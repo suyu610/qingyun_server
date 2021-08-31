@@ -12,27 +12,27 @@ import java.util.Map;
 
 @Mapper
 public interface QuizMapper {
-    LinkedList<QuizCateVO> getAllQuizCate();
+    LinkedList<QuizCate> getAllQuizCate();
 
     // 根据目录id，查找所有题库
-    LinkedList<QuizPO> getQuizPObyCateId(@Param("cateId") int cateId);
+    LinkedList<Quiz> getQuizPObyCateId(@Param("cateId") int cateId);
 
     // 获取用户的题库
     LinkedList<UserQuizPO> getUserQuiz(@Param("ssNumber") String ssNumber);
 
     // 根据ID，获取题库
-    QuizPO getQuizById(@Param("quizId") int quizId);
+    Quiz getQuizById(@Param("quizId") int quizId);
 
     // 根据题库id，查找所有章
     @MapKey("id")
-    Map<Integer, QuizChapterPO> getChapterByQuizId(@Param("quizId") int quizId);
+    Map<Integer, QuizChapter> getChapterByQuizId(@Param("quizId") int quizId);
 
     // 根据题库id，查找所有小节
     @MapKey("id")
-    Map<Integer, QuizSectionPO> getSectionByQuizId(@Param("quizId") int quizId);
+    Map<Integer, QuizSection> getSectionByQuizId(@Param("quizId") int quizId);
 
     // 根据题库id，查找所有的问题
-    List<QuizQuesPO> getQuesByQuizId(@Param("quizId") int quizId);
+    List<QuizQues> getQuesByQuizId(@Param("quizId") int quizId);
 
     // 题库的添加人数
     int getAddNumber(@Param("quizId") int quizId);
@@ -57,32 +57,32 @@ public interface QuizMapper {
     int addQuiz(@Param("quizId") int quizId, @Param("ssNumber") String ssNumber);
 
     // 开始答题,根据id,mode,ssNumber,quizNum，生成一份试题
-    LinkedList<QuizQuesForAnswerVO> generatePaper(QuizStartReqVO vo);
+    LinkedList<QuizQuesForAnswer> generatePaper(QuizExamPreReqVO vo);
 
     //
-    QuizQuesForAnswerVO getQuesAnswerBasicInfo(@Param("quesId") int quesId);
+    QuizQuesForAnswer getQuesAnswerBasicInfo(@Param("quesId") int quesId);
 
     // 符合条件的题目id列表
-    LinkedList<Integer> getAllQuesIdByQuizId(QuizStartReqVO vo);
-    LinkedList<Integer> getHasDoneQuesIdByQuizId(QuizStartReqVO vo);
-    LinkedList<Integer> getErrQuesIdByQuizId(QuizStartReqVO vo);
+    LinkedList<Integer> getAllQuesIdByQuizId(QuizExamPreReqVO vo);
+    LinkedList<Integer> getHasDoneQuesIdByQuizId(QuizExamPreReqVO vo);
+    LinkedList<Integer> getErrQuesIdByQuizId(QuizExamPreReqVO vo);
 
     LinkedList<QuizOption> getOptionsByQuesId(@Param("quesId") int quesId);
 
     LinkedList<QuizFile> getFilesByQuesId(@Param("quesId") int quesId);
 
-    LinkedList<QuizNotePO> getOtherNote(@Param("quesId") int quesId, @Param("defaultNoteId") int defaultNoteId);
+    LinkedList<QuizNote> getOtherNote(@Param("quesId") int quesId, @Param("defaultNoteId") int defaultNoteId);
 
-    QuizNotePO getNoteByNoteId(@Param("noteId") int noteId);
+    QuizNote getNoteByNoteId(@Param("noteId") int noteId);
 
     // 添加答题记录
-    int submitQuesRecorder(QuizQuesSubmitReqVO vo);
+    int submitQuesRecorder(QuizQuesSubmitReq vo);
 
     // 返回现在最大的id
     int getMaxQuizId();
 
     // 创建题库
-    int createQuiz(QuizPO quizPO);
+    int createQuiz(Quiz quizPO);
 
 }
 

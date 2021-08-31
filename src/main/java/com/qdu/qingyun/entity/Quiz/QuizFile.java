@@ -4,7 +4,12 @@ import lombok.Data;
 
 @Data
 public class QuizFile {
-    String url;
     String type;
+    int id;
+    int ownerId;
+    int quizFileTypeId;
+    String media_type;
+    String url;
     int index;
+
 }

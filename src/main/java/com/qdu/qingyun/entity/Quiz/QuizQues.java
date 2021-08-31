@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class QuizQuesPO {
+public class QuizQues {
     int id;
     String title;
     int sectionId;

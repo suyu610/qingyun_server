@@ -1,12 +1,12 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReqVO;
+import com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReq;
 import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.entity.User.UserQuizPO;
-import com.qdu.qingyun.entity.Quiz.QuizCateVO;
-import com.qdu.qingyun.entity.Quiz.QuizQuesForAnswerVO;
-import com.qdu.qingyun.entity.Quiz.QuizStartReqVO;
+import com.qdu.qingyun.entity.Quiz.QuizCate;
+import com.qdu.qingyun.entity.Quiz.QuizQuesForAnswer;
+import com.qdu.qingyun.entity.Quiz.QuizExamPreReqVO;
 import com.qdu.qingyun.service.QuizService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class QuizController {
 
     // 获取所有题库
     @GetMapping("cate/all")
-    public Result<QuizCateVO> getAllQuiz() {
+    public Result<QuizCate> getAllQuiz() {
         return Result.ok(quizService.getAllQuiz());
     }
 
@@ -83,16 +83,16 @@ public class QuizController {
     // 开始答题
     @Authorization
     @PostMapping("/core/startAnswer")
-    public Result<LinkedList<QuizQuesForAnswerVO>> startAnswer(@RequestBody QuizStartReqVO quizStartReqVO, HttpServletRequest request) {
+    public Result<LinkedList<QuizQuesForAnswer>> startAnswer(@RequestBody QuizExamPreReqVO quizExamPreReqVO, HttpServletRequest request) {
         String ssNumber = ((String) request.getAttribute("ssNumber"));
-        quizStartReqVO.setSsNumber(ssNumber);
-        return Result.ok(quizService.generatePaper(quizStartReqVO));
+        quizExamPreReqVO.setSsNumber(ssNumber);
+        return Result.ok(quizService.generatePaper(quizExamPreReqVO));
     }
 
     // 提交做题记录
     @Authorization
     @PostMapping("/core/submitQuesRecorder")
-    public Result submitQuesRecorder(@RequestBody QuizQuesSubmitReqVO vo, HttpServletRequest request) {
+    public Result submitQuesRecorder(@RequestBody QuizQuesSubmitReq vo, HttpServletRequest request) {
         String ssNumber = ((String) request.getAttribute("ssNumber"));
         vo.setSsNumber(ssNumber);
         return Result.ok(quizService.submitQuesRecorder(vo));

@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuizPO {
+public class Quiz {
     int id;
     String title;
     String desc;

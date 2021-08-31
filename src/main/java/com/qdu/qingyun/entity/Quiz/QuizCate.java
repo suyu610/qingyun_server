@@ -5,8 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class QuizCateVO {
-    String title;
+public class QuizCate {
     int id;
-    List<QuizPO> quizzes;
+    String title;
+    String desc;
+    List<Quiz> quizzes;
 }

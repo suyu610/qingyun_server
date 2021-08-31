@@ -5,11 +5,13 @@ import lombok.Data;
 import java.util.LinkedList;
 
 @Data
-public class QuizChapterPO {
+public class QuizSection {
     int id;
     String title;
-    String desc;
+    int rightNum;
+    int errNum;
+    int undoNum;
     int totalNum;
-    int doneNum;
-    LinkedList<QuizSectionPO> quizSectionList;
+    int chapterId;
+    LinkedList<QuizQues> quizQuesList;
 }

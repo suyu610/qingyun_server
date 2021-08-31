@@ -2,7 +2,7 @@ package com.qdu.qingyun.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.qdu.qingyun.entity.Quiz.QuizImportVO;
+import com.qdu.qingyun.entity.Quiz.QuizWhole;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
@@ -60,10 +60,10 @@ public class ExcelUtil {
     }
 
 
-    public static QuizImportVO getExcelToQuizImportVO(MultipartFile file, String pattern) throws IOException {
+    public static QuizWhole getExcelToQuizImportVO(MultipartFile file, String pattern) throws IOException {
         Row row;
         JSONObject quizJson = new JSONObject();
-        QuizImportVO quiz = new QuizImportVO();
+        QuizWhole quiz = new QuizWhole();
         Workbook workbook = readExcel(file, pattern);
 
         Sheet sheet = workbook.getSheetAt(0);// 工作表

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class QuizNotePO {
+public class QuizNote {
     int id;
     int userId;
     String userName;
