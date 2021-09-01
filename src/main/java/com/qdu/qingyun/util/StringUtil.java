@@ -6,6 +6,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -108,8 +109,27 @@ public class StringUtil {
         return pybf.toString().replaceAll("\\W", "").trim();
     }
 
-    public static void main(String[] args) {
-        LogUtil.GetLog().info(StringUtil.isDocUrl("https://www.baidu.com/a.pdf"));
+    // 将单个的A转为0
+    // 将多个ABCD,转为 0&#&1&#&2&#&3
+    public static String convertExcelAnswerToAnswerStr(String opt) {
+        List<String> list = new ArrayList<>();
+        StringBuffer stringBuffer = new StringBuffer();
 
+        char a[] = opt.toCharArray();
+        if (a.length == 1) {
+            stringBuffer.append(a[0] - 65);
+        } else {
+            for (int i = 0; i < a.length; i++) {
+                stringBuffer.append(a[i] - 65);
+                if (i != a.length - 1) {
+                    stringBuffer.append("&#&");
+                }
+            }
+        }
+        return stringBuffer.toString();
+    }
+
+    public static void main(String[] args) {
+//        LogUtil.GetLog().info(StringUtil.isDocUrl("https://www.baidu.com/a.pdf"));
     }
 }

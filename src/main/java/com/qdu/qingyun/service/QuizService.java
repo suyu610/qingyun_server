@@ -26,5 +26,12 @@ public interface QuizService {
 
     Quiz getUserSubQuizInfo(int quizId);
 
-    String importQuiz(MultipartFile file,String ssNumber) throws IOException;
+    String importQuiz(MultipartFile file, String ssNumber) throws IOException;
+
+    // 收藏或取消收藏题目
+    int toggleStarQues(int quizId, int quesId, String ssNumber);
+
+    // 新建或修改笔记
+    int createOrUpdateNote(int quizId, int quesId, String ssNumber,String noteHtml);
+
 }

@@ -192,7 +192,6 @@ public class DocController {
             }
             return Result.ok(previewVO);
         } catch (MalformedURLException e) {
-            System.out.println(e);
             return Result.error("文档路径解析错误");
 
         } catch (IOException e) {

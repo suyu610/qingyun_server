@@ -19,7 +19,6 @@ public class WordController {
         MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = req.getFile("file");
 
-        System.out.println("有新的文件");
         //获取文件名
         String fileName = multipartFile.getOriginalFilename();
         //获取文件后缀名

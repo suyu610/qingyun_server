@@ -121,6 +121,5 @@ public class YoudaoUtil {
         params.put("signType", "v2");
 
         String result = doRequest(YOUDAO_URL, params);
-        System.out.println(result);
     }
 }

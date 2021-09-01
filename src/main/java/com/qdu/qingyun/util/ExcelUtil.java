@@ -1,17 +1,20 @@
 package com.qdu.qingyun.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.qdu.qingyun.entity.Quiz.QuizWhole;
+import com.qdu.qingyun.entity.Quiz.*;
+import io.netty.util.internal.StringUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ExcelUtil {
@@ -20,8 +23,6 @@ public class ExcelUtil {
      * 根据文档格式返回相应的文档对象
      */
     public static Workbook readExcel(MultipartFile file, String pattern) {
-        // 文档对象
-        Workbook workbook = null;
         if (file != null) {
             try {
                 // 获取输入流
@@ -35,7 +36,6 @@ public class ExcelUtil {
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                ;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -52,9 +52,7 @@ public class ExcelUtil {
             String fileName = file.getOriginalFilename();
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
             suffix = suffix.toLowerCase();
-            if ("xls".equals(suffix) || "xlsx".equals(suffix)) {
-                return true;
-            }
+            return "xls".equals(suffix) || "xlsx".equals(suffix);
         }
         return false;
     }
@@ -62,9 +60,10 @@ public class ExcelUtil {
 
     public static QuizWhole getExcelToQuizImportVO(MultipartFile file, String pattern) throws IOException {
         Row row;
-        JSONObject quizJson = new JSONObject();
         QuizWhole quiz = new QuizWhole();
         Workbook workbook = readExcel(file, pattern);
+        LinkedList<QuizChapter> quizChapterList = new LinkedList();
+        LinkedList<QuizQues> quesList = new LinkedList<>();
 
         Sheet sheet = workbook.getSheetAt(0);// 工作表
         int lastRowNum = sheet.getLastRowNum();// 获取最后一行序号,从零开始
@@ -81,15 +80,27 @@ public class ExcelUtil {
         // 获取章节名,小节名
         Row rowChap = sheet.getRow(3);
         Row rowSection = sheet.getRow(4);
+
         for (int rowIndex = 1; rowIndex < rowChap.getPhysicalNumberOfCells(); rowIndex++) {
             if (rowChap.getCell(rowIndex) != null) {
-                System.out.println(rowIndex);
+                QuizChapter quizChapter = new QuizChapter();
+                LinkedList<QuizSection> quizSectionList = new LinkedList();
+                quizChapter.setTitle(rowChap.getCell(rowIndex).toString());
                 rowChap.getCell(rowIndex).setCellType(CellType.STRING);
-                System.out.println(rowChap.getCell(rowIndex).toString());
                 String rowSectionStr = rowSection.getCell(rowIndex).toString();
+                String[] sectionTitleList = rowSectionStr.split("[;；]");
+                for (String sectionTitle : sectionTitleList) {
+                    if (!StringUtil.isNullOrEmpty(sectionTitle)) {
+                        QuizSection quizSection = new QuizSection();
+                        quizSection.setTitle(sectionTitle);
+                        quizSectionList.add(quizSection);
+                    }
+                }
+                quizChapter.setQuizSectionList(quizSectionList);
+                quizChapterList.add(quizChapter);
             }
         }
-
+        quiz.setChapterList(quizChapterList);
 
         // 处理图片
         for (XSSFShape picture : pics) {
@@ -103,18 +114,15 @@ public class ExcelUtil {
             byte[] data = pict.getData();
             out.write(data);
             out.close();
-            // 上传图片
-            File pictureFile = new File(pictureFileName);
-            //  TencentCosUtil.uploadFile(pictureFile, "/quiz", timestamp.getTime() + "_" + clientAnchor.getRow1());
             pictureMap.put(clientAnchor.getRow1(), pictureFileName);
         }
 
-        JSONArray quesList = new JSONArray();
-
         // 获取各个题目
         for (int i = 6; i <= lastRowNum; i++) {
-            JSONObject ques = new JSONObject();
             row = sheet.getRow(i);
+            QuizQues quizQues = new QuizQues();
+            List<QuizFile> fileList = new LinkedList<>();
+            LinkedList<QuizOption> options = new LinkedList<>();
 
             // 设置单元格为String属性
             for (int k = 0; k < row.getPhysicalNumberOfCells(); k++) {
@@ -126,47 +134,65 @@ public class ExcelUtil {
             String section = row.getCell(0) == null ? "" : row.getCell(0).getStringCellValue();
             String title = row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue();
             String picture = row.getCell(2) == null ? "-1" : row.getCell(2).getStringCellValue();
-            String appendix = row.getCell(3) == null ? "" : row.getCell(3).getStringCellValue();
+            String audioFileUrl = row.getCell(3) == null ? "" : row.getCell(3).getStringCellValue();
             String type = row.getCell(4) == null ? "" : row.getCell(4).getStringCellValue();
             String answer = row.getCell(5) == null ? "" : row.getCell(5).getStringCellValue();
             String explain = row.getCell(6) == null ? "" : row.getCell(6).getStringCellValue();
 
             // 匹配章节序号
             String regPattern = "^\\d+=\\d+";
-            String chapterIndex = "0";
-            String sectionIndex = "0";
+            int chapterIndex = 0;
+            int sectionIndex = 0;
 
             if (section.matches(regPattern)) {
-                chapterIndex = section.split("=")[0];
-                sectionIndex = section.split("=")[1];
+                chapterIndex = Integer.parseInt(section.split("=")[0]);
+                sectionIndex = Integer.parseInt(section.split("=")[1]);
             }
 
-            ques.put("title", title);
-            ques.put("answer", answer);
-            ques.put("type", type);
-
-            JSONArray optionList = new JSONArray();
-//            List<String> optionList = new ArrayList<>();
+            quizQues.setTitle(title);
+            quizQues.setAnswerStr(answer);
+            quizQues.setTypeStr(type);
+            quizQues.setSectionIndex(sectionIndex);
+            quizQues.setChapterIndex(chapterIndex);
+            quizQues.setExplain(explain);
+            if (!audioFileUrl.equals("")) {
+                QuizFile audioFile = new QuizFile();
+                audioFile.setUrl(audioFileUrl);
+                audioFile.setMediaType("voice");
+                audioFile.setQuizFileTypeId(1);
+                fileList.add(audioFile);
+            }
             if (!picture.equals("无")) {
                 if (pictureMap.containsKey(i)) {
-                    ques.put("picture", pictureMap.get(i));
+                    QuizFile picFile = new QuizFile();
+                    picFile.setMediaType("img");
+                    picFile.setUrl(pictureMap.get(i));
+                    picFile.setQuizFileTypeId(1);
+                    fileList.add(picFile);
                 }
             }
 
             // 处理选项
-            for (int j = 6; j < row.getPhysicalNumberOfCells(); j++) {
-                row.getCell(j).setCellType(CellType.STRING);
-                optionList.add(j - 6, row.getCell(j) == null ? "" : row.getCell(j).toString());
-                ques.put("optionArr", optionList);
+            for (int j = 7; j <= row.getLastCellNum(); j++) {
+                if (row.getCell(j) != null) {
+                    row.getCell(j).setCellType(CellType.STRING);
+                    QuizOption option = new QuizOption();
+                    option.setBody(row.getCell(j) == null ? "" : row.getCell(j).toString());
+                    option.setSeq(j - 7);
+                    options.add(option);
+                }
             }
-            quesList.add(ques);
+
+            quizQues.setOptions(options);
+            quizQues.setFileList(fileList);
+            quesList.add(quizQues);
         }
-        quizJson.put("quizArr", quesList);
-        System.out.println(quizJson);
+
+        quiz.setQuesList(quesList);
         return quiz;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
     }
 }

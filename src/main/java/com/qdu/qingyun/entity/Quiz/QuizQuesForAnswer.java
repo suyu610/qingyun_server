@@ -23,5 +23,5 @@ public class QuizQuesForAnswer extends QuizQues {
     boolean hasStar;
     QuizNote defaultNote;
     LinkedList<QuizNote> otherNote;
-    LinkedList<QuizNote> userNote;
+    QuizNote userNote;
 }

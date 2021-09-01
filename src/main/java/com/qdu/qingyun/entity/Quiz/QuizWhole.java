@@ -2,13 +2,16 @@ package com.qdu.qingyun.entity.Quiz;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.LinkedList;
 
 /**
- * @Description  用于接收上传excel所创建的题库,一个完整的题库
+ * @Description  用于接收上传excel所创建的题库,包含完整的题库信息
  */
 @Data
 public class QuizWhole extends Quiz {
+    int id;
+    int cateId;
     String cateStr;
-    List<QuizChapter> chapterList;
+    LinkedList<QuizChapter> chapterList;
+    LinkedList<QuizQues> quesList;
 }

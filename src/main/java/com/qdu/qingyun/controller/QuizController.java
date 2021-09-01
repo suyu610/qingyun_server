@@ -1,12 +1,9 @@
 package com.qdu.qingyun.controller;
 
 import com.qdu.qingyun.config.Authorization;
-import com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReq;
+import com.qdu.qingyun.entity.Quiz.*;
 import com.qdu.qingyun.entity.System.Result;
 import com.qdu.qingyun.entity.User.UserQuizPO;
-import com.qdu.qingyun.entity.Quiz.QuizCate;
-import com.qdu.qingyun.entity.Quiz.QuizQuesForAnswer;
-import com.qdu.qingyun.entity.Quiz.QuizExamPreReqVO;
 import com.qdu.qingyun.service.QuizService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +35,6 @@ public class QuizController {
     public Result<QuizCate> getAllQuiz() {
         return Result.ok(quizService.getAllQuiz());
     }
-
 
     // 获取自己的题库
     @Authorization
@@ -112,11 +108,30 @@ public class QuizController {
     @ResponseBody
     public Result uploadExcel(@RequestParam("file") MultipartFile file) throws IOException {
         String ssNumber = "2019205913";
-        String result = quizService.importQuiz(file,ssNumber);
-        if(result.equals("成功")){
+        String result = quizService.importQuiz(file, ssNumber);
+        if (result.equals("成功")) {
             return Result.ok("成功");
-        }else{
+        } else {
             return Result.error(result);
         }
+    }
+
+    // 对题目进行收藏或取消
+    @Authorization
+    @GetMapping("/ques/star/{quizId}/{quesId}")
+    public Result toggleStarQues(@PathVariable int quizId, @PathVariable int quesId, HttpServletRequest request) {
+        String ssNumber = ((String) request.getAttribute("ssNumber"));
+        return Result.ok(quizService.toggleStarQues(quizId, quesId, ssNumber));
+    }
+
+
+    // 新增或修改笔记
+    @PostMapping("/note/insert")
+    public Result createOrUpdateNote(HttpServletRequest request,@RequestBody QuizNote quizNote) {
+//        String ssNumber = ((String) request.getAttribute("ssNumber"));
+        String ssNumber = "2019205913";
+        quizService.createOrUpdateNote(quizNote.getQuizId(),quizNote.getQuesId(),ssNumber,quizNote.getBody());
+        System.out.println(quizNote.getBody());
+        return Result.ok();
     }
 }

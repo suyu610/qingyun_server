@@ -179,7 +179,6 @@ public class ShowDocServiceImpl implements ShowDocService {
             String gradeId = vo.getCategoryId().substring(4, 6);
             String collegeName = baseDataMapper.findCollegeNameById(Integer.parseInt(collegeId));
 
-            System.out.println(gradeId);
             if (StringUtils.equals("01", gradeId))
                 vo.setGradeName("大一");
             if (StringUtils.equals("02", gradeId))
@@ -250,7 +249,6 @@ public class ShowDocServiceImpl implements ShowDocService {
             if(StringUtil.isDocUrl(fileUrl)){
                 // todo: 给腾讯云发送请求，得到总页数
                 int singleFilePage = TencentCosUtil.totalNumber(tencentKey);
-                System.out.println("页数为:"+singleFilePage);
                 totalPageCount+=singleFilePage;
                 previewFileInfoVO.setSingleFileTotalPage(singleFilePage);
                 previewFileInfoVO.setUrl(authUrl);

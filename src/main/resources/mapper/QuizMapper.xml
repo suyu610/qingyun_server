@@ -46,20 +46,28 @@
                 from quiz_ques
                 where quiz_id = quiz_quiz.id) as totalNum,
 
-               (select count(*)
+               (select count(distinct ques_id)
                 from quiz_record_ques
                 where quiz_id = quiz_quiz.id
-                  and is_correct = 1)         as doneNum,
+                  and is_correct = 1
+                  and user_id = #{ssNumber})  as rightNum,
 
-               (select count(*)
+               (select count(distinct ques_id)
                 from quiz_record_ques
                 where quiz_id = quiz_quiz.id
-                  and is_correct = 0)         as errNum,
+                  and user_id = #{ssNumber})  as doneNum,
 
-               (select count(*)
+               (select count(distinct ques_id)
+                from quiz_record_ques
+                where quiz_id = quiz_quiz.id
+                  and is_correct = 0
+                  and user_id = #{ssNumber})  as errNum,
+
+               (select count(distinct ques_id)
                 from quiz_ques_star
                 where quiz_id = quiz_quiz.id
-                  and DELETED = 0)            as starNum
+                  and DELETED = 0
+                  and user_id = #{ssNumber})  as starNum
 
         from quiz_quiz_star
                  inner join quiz_quiz
@@ -146,7 +154,8 @@
         where quiz_id = #{id} LIMIT #{quesNum}
     </select>
 
-    <select id="getHasDoneQuesIdByQuizId" resultType="Integer" parameterType="com.qdu.qingyun.entity.Quiz.QuizExamPreReqVO">
+    <select id="getHasDoneQuesIdByQuizId" resultType="Integer"
+            parameterType="com.qdu.qingyun.entity.Quiz.QuizExamPreReqVO">
         select ques_id as id
         from quiz_record_ques
         where quiz_id = #{id}
@@ -169,7 +178,7 @@
     </select>
 
     <select id="getFilesByQuesId" parameterType="Integer" resultType="com.qdu.qingyun.entity.Quiz.QuizFile">
-        select media_type as type, url, `index`
+        select media_type, url, `index`
         from quiz_file
         where owner_id = #{quesId}
           and quiz_file_type_id = 1
@@ -183,6 +192,7 @@
                quiz_note.view_count,
                quiz_note.create_time,
                quiz_note.quiz_id,
+               quiz_note.star_count,
                quiz_note.is_public
         from quiz_note
                  INNER JOIN school_stu on quiz_note.user_id = school_stu.ss_number
@@ -195,6 +205,7 @@
         SELECT school_stu.`name` as userName,
                quiz_note.id,
                quiz_note.user_id,
+               quiz_note.star_count,
                quiz_note.body,
                quiz_note.view_count,
                quiz_note.create_time,
@@ -203,6 +214,18 @@
         from quiz_note
                  INNER JOIN school_stu on quiz_note.user_id = school_stu.ss_number
         where quiz_note.id = #{noteId}
+    </select>
+
+    <select id="getSingleQuesUserNote" resultType="com.qdu.qingyun.entity.Quiz.QuizNote">
+        SELECT id,
+               body,
+               view_count,
+               star_count,
+               create_time,
+               is_public
+        from quiz_note
+        where ques_id = #{quesId}
+          and user_id = #{ssNumber}
     </select>
 
     <insert id="submitQuesRecorder" parameterType="com.qdu.qingyun.entity.Quiz.QuizQuesSubmitReq">
@@ -221,5 +244,97 @@
         values (#{authorId}, NOW(), #{cateId}, #{title}, #{desc});
     </insert>
 
+    <insert id="createChapter" parameterType="com.qdu.qingyun.entity.Quiz.QuizChapter" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into quiz_chapter (update_time, title, quiz_id)
+        values (NOW(), #{title}, #{quizId});
+    </insert>
+
+    <insert id="createSection" parameterType="com.qdu.qingyun.entity.Quiz.QuizSection" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into quiz_section (update_time, title, chapter_id, quiz_id)
+        values (NOW(), #{title}, #{chapterId}, #{quizId});
+    </insert>
+
+    <insert id="createDefaultNote" parameterType="com.qdu.qingyun.entity.Quiz.QuizNote" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into quiz_note (create_time, body, user_id, is_public)
+        values (NOW(), #{body}, #{userId}, 1);
+    </insert>
+
+    <insert id="createQues" parameterType="com.qdu.qingyun.entity.Quiz.QuizQues" useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        insert into quiz_ques (create_time, title, section_id, chapter_id, quiz_id, type_id, explain_id, answer)
+        values (NOW(), #{title}, #{sectionId}, #{chapterId}, #{quizId}, #{typeId}, #{explainId}, #{answerStr});
+    </insert>
+
+    <insert id="createOption" parameterType="com.qdu.qingyun.entity.Quiz.QuizOption">
+        insert into quiz_option (ques_id, body, seq)
+        values (#{quesId}, #{body}, #{seq});
+    </insert>
+
+    <insert id="createFile" parameterType="com.qdu.qingyun.entity.Quiz.QuizFile">
+        insert into quiz_file (owner_id, quiz_file_type_id, media_type, url, `index`)
+        values (#{ownerId}, #{quizFileTypeId}, #{mediaType}, #{url}, #{index});
+    </insert>
+
+    <select id="quesHasStar" resultType="Integer">
+        select count(*)
+        from quiz_ques_star
+        where user_id = #{ssNumber}
+          and ques_id = #{quesId}
+          and DELETED = 0
+    </select>
+
+    <select id="quesStarExisted" resultType="Integer">
+        select DELETED
+        from quiz_ques_star
+        where user_id = #{ssNumber}
+          and ques_id = #{quesId}
+          and quiz_id = #{quizId} LIMIT 1
+    </select>
+
+    <insert id="starQues">
+        insert into quiz_ques_star (user_id, ques_id, quiz_id, create_time)
+        values (#{ssNumber}, #{quesId}, #{quizId}, NOW());
+    </insert>
+
+    <update id="updateStarQues">
+        update quiz_ques_star
+        set DELETED    = #{deleted},
+            create_time=NOW()
+        where user_id = #{ssNumber}
+          and ques_id = #{quesId}
+          and quiz_id = #{quizId}
+
+    </update>
+
+
+    <select id="noteExisted" resultType="Integer">
+        select COUNT(*)
+        from quiz_note
+        where user_id = #{ssNumber}
+          and ques_id = #{quesId}
+          and quiz_id = #{quizId}
+    </select>
+
+    <insert id="insertNote">
+        insert into quiz_note (user_id, ques_id, quiz_id, create_time, body)
+        values (#{ssNumber}, #{quesId}, #{quizId}, NOW(), #{noteHtml});
+    </insert>
+
+    <update id="updateNote">
+        update quiz_note
+        set body       = #{noteHtml},
+            create_time=NOW()
+        where user_id = #{ssNumber}
+          and ques_id = #{quesId}
+          and quiz_id = #{quizId}
+
+    </update>
 
 </mapper>

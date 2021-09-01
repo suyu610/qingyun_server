@@ -64,7 +64,9 @@ public interface QuizMapper {
 
     // 符合条件的题目id列表
     LinkedList<Integer> getAllQuesIdByQuizId(QuizExamPreReqVO vo);
+
     LinkedList<Integer> getHasDoneQuesIdByQuizId(QuizExamPreReqVO vo);
+
     LinkedList<Integer> getErrQuesIdByQuizId(QuizExamPreReqVO vo);
 
     LinkedList<QuizOption> getOptionsByQuesId(@Param("quesId") int quesId);
@@ -75,6 +77,7 @@ public interface QuizMapper {
 
     QuizNote getNoteByNoteId(@Param("noteId") int noteId);
 
+    QuizNote getSingleQuesUserNote(@Param("quesId") int quesId,@Param("ssNumber") String ssNumber);
     // 添加答题记录
     int submitQuesRecorder(QuizQuesSubmitReq vo);
 
@@ -83,6 +86,45 @@ public interface QuizMapper {
 
     // 创建题库
     int createQuiz(Quiz quizPO);
+
+    // 创建章节
+    int createChapter(QuizChapter quizChapter);
+
+    // 创建小节
+    int createSection(QuizSection quizSection);
+
+    // 创建答案
+    int createDefaultNote(QuizNote note);
+
+    // 创建题目
+    int createQues(QuizQues ques);
+
+    // 创建选项
+    int createOption(QuizOption option);
+
+    // 创建附件
+    int createFile(QuizFile file);
+
+    // 是否收藏该问题
+    int quesHasStar(@Param("quesId") int quesId, @Param("ssNumber") String ssNumber);
+
+    // 查询是否存在记录，[todo] 改成 ON DUPLICATE KEY UPDATE
+    Integer quesStarExisted(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber);
+
+    // 新增收藏问题
+    Integer starQues(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber);
+
+    // 更新收藏问题
+    Integer updateStarQues(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber, @Param("deleted") int deleted);
+
+    // 是否存在笔记
+    Integer noteExisted(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber);
+
+    int updateNote(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber,@Param("noteHtml") String noteHtml);
+
+    int insertNote(@Param("quizId") int quizId, @Param("quesId") int quesId, @Param("ssNumber") String ssNumber,@Param("noteHtml") String noteHtml);
+
+
 
 }
 

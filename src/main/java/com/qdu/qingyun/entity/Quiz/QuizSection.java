@@ -13,5 +13,6 @@ public class QuizSection {
     int undoNum;
     int totalNum;
     int chapterId;
+    int quizId;
     LinkedList<QuizQues> quizQuesList;
 }

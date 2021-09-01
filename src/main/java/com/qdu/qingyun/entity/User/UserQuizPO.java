@@ -10,4 +10,5 @@ public class UserQuizPO {
     int totalNum;
     int starNum;
     int errNum;
+    int rightNum;
 }

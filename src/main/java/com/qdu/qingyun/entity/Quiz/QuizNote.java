@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class QuizNote {
     int id;
-    int userId;
+    String userId;
     String userName;
     String body;
     int viewCount;
@@ -15,4 +15,6 @@ public class QuizNote {
     boolean isPublic;
     int quizId;
     boolean hasStar;
+    int quesId;
+    int starCount;
 }

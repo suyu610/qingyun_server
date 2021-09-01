@@ -44,7 +44,6 @@ public class CommentServiceImpl implements CommentService {
         // 先看这个用户是否购买了文档
         //
         if(!orderService.hasBought(commentItemVO.getSsNumber(),commentItemVO.getDocId())){
-            System.out.println("未购买");
             return false;
         }
 

@@ -33,7 +33,6 @@ public class CommentController {
         }
 
         vo.setSsNumber(ssNumber);
-        System.out.println(vo);
         return Result.ok(commentService.insertNewComment(vo));
     }
 }

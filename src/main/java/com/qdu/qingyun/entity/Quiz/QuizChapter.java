@@ -11,5 +11,6 @@ public class QuizChapter {
     String desc;
     int totalNum;
     int doneNum;
+    int quizId;
     LinkedList<QuizSection> quizSectionList;
 }
